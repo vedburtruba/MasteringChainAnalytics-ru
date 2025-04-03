@@ -2,7 +2,7 @@
 - [Введение](readme.md) 
 - [#0 Стать onchain аналитиком](ch00/ch00-become-chain-analyst.md)
 
-## Элементарный уровень
+## Начальный уровень
 
 - [#1 Введение в платформу Dune](ch01/ch01-dune-platform-introduction.md)
 - [#2 Быстрый старт](ch02/ch02-quickstart.md) 
