@@ -25,3 +25,8 @@
 - [#17 Анализ MEV - uniswap](ch17/ch17-mev-analysis-uniswap.md)
 - [#18 Мультичейн-анализ Uniswap](ch18/ch18-uniswap-multichain-analysis.md)
 - [#19 Полезные метрики](ch19/ch19-useful-metrics.md)
+## Продвинутый
+- [#20 Анализ сети](ch20/ch20-network-analysis.md)
+- [#21 Анализ BTC](ch21/ch21-btc-analysis.md)
+- [#22 Как построить Spellbook](ch22/ch22-how-to-build-spellbook.md)
+- [#23 Как построить приложение с использованием dune api](ch23/ch23-how-to-build-app-use-dune-api.md)
