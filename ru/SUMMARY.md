@@ -30,3 +30,7 @@
 - [#21 Анализ BTC](ch21/ch21-btc-analysis.md)
 - [#22 Как построить Spellbook](ch22/ch22-how-to-build-spellbook.md)
 - [#23 Как построить приложение с использованием dune api](ch23/ch23-how-to-build-app-use-dune-api.md)
+## Абстракция аккаунта
+  - [#AA 01 Объяснение абстракции аккаунта](ch24/ch24-explanation-of-account-abstraction.md)
+  - [#AA 02 Анализ данных абстракции аккаунта](ch25/ch25-account-abstraction-data-analysis.md)
+  - [#AA 03 Таблица агрегирования AA для EVM-цепочек](ch26/ch26-AA-aggregation-table-of-EVM-chains.md)
