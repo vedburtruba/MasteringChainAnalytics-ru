@@ -170,3 +170,12 @@
   - [Build Your Dune V1 Analytics Dashboard from 0 to 1 (Basic)](https://mirror.xyz/0xbi.eth/6cbedGOx0GwZdvuxHeyTAgn333jaT34y-2qryvh8Fio)
   - [Build Your Dune V1 Analytics Dashboard from 0 to 1 (Practical)](https://mirror.xyz/0xbi.eth/603BIaKXn7s2_7A84oayY_Fn5XUPh6zDsv2OlQTdzCg)
   - [Build Your Dune V1 Analytics Dashboard from 0 to 1 (Common Table Structures)](https://mirror.xyz/0xbi.eth/uSr336PzXtqMuE_LPBewbJ1CHN2oUs40-TDET2rnkqU)
+## О нас
+
+`Sixdegree` — это профессиональная команда по анализу данных на блокчейне. Наша миссия — предоставлять пользователям точные графики, аналитику и инсайты на основе данных на блокчейне. Мы стремимся популяризировать анализ данных на блокчейне. Благодаря созданию сообщества и написанию учебных пособий, среди прочих инициатив, мы обучаем аналитиков данных на блокчейне, выпускаем ценный аналитический контент, продвигаем сообщество для создания слоя данных блокчейна и готовим кадры для широкого будущего приложений блокчейн-данных. Добро пожаловать на площадку обмена опытом в сообществе!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Электронная почта: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
