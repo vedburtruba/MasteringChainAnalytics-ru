@@ -228,3 +228,11 @@ SixdegreeLab – это профессиональная команда по а�
 - Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
 - Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
 - Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
+
+## Ссылки
+1. [Эра капитальной эффективности DeFi](https://blog.hashflow.com/the-capital-efficiency-era-of-defi-d8b3427feae4)
+2. [Использование ончейн-данных для политических исследований: Часть 1](https://policy.paradigm.xyz/writing/using-Onchain-data-for-policy-research-part-1)
+3. [IOSG: Анализ текущей ситуации и перспективы платформы анализа ончейн-данных](https://foresightnews.pro/article/detail/8473)
+4. [Введение в «ончейн»-анализ](https://www.blockstar.ch/post/an-introduction-to-Onchain-analysis)
+5. [Архитектура приложения Web 3.0](https://www.preethikasireddy.com/post/the-architecture-of-a-web-3-0-application)
+6. [Sixdegree Dune Dashborads](https://dune.com/sixdegree)
