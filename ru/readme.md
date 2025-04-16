@@ -56,3 +56,18 @@
 - Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
 - Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
 - Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
+
+## Благодарности
+
+**Спонсоры**
+
+Эта книга спонсируется следующими организациями, искренне благодарим их за сильную поддержку при написании этой книги.
+
+- [Ethereum Fundation](https://ethereum.foundation/)
+- [Dune Analytics](https://dune.com/)
+
+**Соавторы**
+
+В то же время, есть много соавторов, участвовавших в этой книге. Большое спасибо за ваш усердный труд.
+
+- george-taotaome, chenxsan, Brendan, 肖宁, g.c., ken, shell, yueyan, wodeche,Winkey
