@@ -46,3 +46,13 @@
   - [#AA 01 объяснение абстракции аккаунта](ch24/ch24-explanation-of-account-abstraction.md)
   - [#AA 02 анализ данных абстракции аккаунта](ch25/ch25-account-abstraction-data-analysis.md)
   - [#AA 03 таблица агрегирования AA для EVM-цепей](ch26/ch26-AA-aggregation-table-of-EVM-chains.md)
+
+## О нас
+
+`Sixdegree` – это профессиональная команда по анализу данных на блокчейне. Наша миссия – предоставлять пользователям точные графики данных на блокчейне, аналитику и инсайты. Мы стремимся популяризировать анализ данных на блокчейне. Благодаря созданию сообщества и написанию учебных пособий, среди прочих инициатив, мы обучаем аналитиков данных на блокчейне, создаем ценный аналитический контент, продвигаем сообщество для создания слоя данных блокчейна и воспитываем таланты для широкого будущего приложений данных блокчейна. Добро пожаловать на площадку обмена опытом в сообществе!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Электронная почта: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
