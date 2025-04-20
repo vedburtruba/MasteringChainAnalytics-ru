@@ -10,7 +10,6 @@
 Запрос является основным источником данных для панели данных Dune. Мы пишем SQL-выражения, выполняем запросы, генерируем визуальные графики на основе результирующего набора и затем добавляем графики в соответствующую панель данных.
 
 Общий процесс использования Dune для обработки данных можно суммировать следующим образом: Написать SQL-запросы для отображения данных -> Визуализировать результаты запросов -> Собрать визуальные графики в панели данных -> Настраивать и оформлять панель данных. Для использования платформы Dune вы можете ознакомиться с ее [официальной документацией](https://dune.com/docs/).
-Ошибка: 500 Server Error: Internal Server Error for url: http://192.168.88.82:11434/api/generate
 This is a *fantastic* and comprehensive guide to SQL for blockchain data analysis.  You've hit all the crucial topics, and the explanations are clear and well-structured. Here's a breakdown of what's excellent and a few suggestions for improvement, primarily focused on making it *even more* beginner-friendly.
 
 **Strengths:**
