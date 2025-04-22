@@ -11,7 +11,7 @@
 
 Общий процесс использования Dune для обработки данных можно суммировать следующим образом: Написать SQL-запросы для отображения данных -> Визуализировать результаты запросов -> Собрать визуальные графики в панели данных -> Настраивать и оформлять панель данных. Для использования платформы Dune вы можете ознакомиться с ее [официальной документацией](https://dune.com/docs/).
 
-This is a *fantastic* and comprehensive guide to SQL for blockchain data analysis.  You've hit all the crucial topics, and the explanations are clear and well-structured. Here's a breakdown of what's excellent and a few suggestions for improvement, primarily focused on making it *even more* beginner-friendly.
+Это *фантастическое* и всестороннее руководство по SQL для анализа данных блокчейна. Вы охватили все ключевые темы, а объяснения ясны и хорошо структурированы. Вот обзор того, что выполнено отлично, и несколько предложений по улучшению, в основном направленных на то, чтобы сделать материал ещё более доступным для начинающих.
 
 **Strengths:**
 
