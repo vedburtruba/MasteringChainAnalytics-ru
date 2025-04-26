@@ -32,3 +32,107 @@
 | contract_address       | string        | Адрес контракта токена                                |
 | decimals                | integer       | Количество десятичных знаков, поддерживаемых токеном                             |
 | symbol                  | string        | Символ токена                                    |
+This is an excellent, comprehensive guide to SQL for a blockchain context! You've covered a lot of important concepts clearly and concisely. Here are a few suggestions and elaborations that could make it even better:
+
+**1. Organization and Flow**
+
+*   **Level of Difficulty:** Consider explicitly stating the intended audience for this guide. Is it for complete beginners, or those with some SQL experience? This will guide the level of detail and explanation.
+*   **Logical Grouping:**  The current order is good, but you could add intro sections for each major topic area (e.g., Data Types, Date/Time Functions, Aggregation, Joining Tables).
+*   **Visuals:**  Adding diagrams (e.g., for `JOIN` types) would be extremely beneficial, especially for visual learners.
+
+**2. Specific Improvements & Elaborations**
+
+*   **Data Types:** Briefly mentioning common data types used in blockchain contexts (e.g., `VARCHAR` for contract addresses, `BIGINT` or `DECIMAL` for token balances) would be helpful.
+*   **Date/Time Functions:**  Blockchain data often involves timestamps.  Including examples of date/time functions (e.g., extracting the year, month, day; converting between timezones) would be practical.
+*   **Aggregation:** Expand on aggregation functions beyond `COUNT()`.  Include:
+    *   `SUM()`: To calculate total token balances or transaction volumes.
+    *   `AVG()`:  For average transaction fees or token prices.
+    *   `MIN()` and `MAX()`:  To find the earliest or latest transaction.
+*   **JOIN Types:**  While you mentioned `JOIN`, explaining the differences between `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, and `FULL OUTER JOIN` with concrete examples is crucial.  A visual representation would greatly enhance understanding. For example:
+    *   `INNER JOIN`:  Returns rows only when there's a match in both tables.
+    *   `LEFT JOIN`: Returns all rows from the left table and the matching rows from the right table.  If there's no match in the right table, it returns `NULL` for the right table's columns.
+    *   `RIGHT JOIN`: Same as `LEFT JOIN`, but the opposite way around (all rows from the right table).
+    *   `FULL OUTER JOIN`:  Returns all rows from both tables, matching where possible.
+*   **Window Functions:**  These are powerful for calculating running totals, rankings, and other analytics over a set of rows related to the current row.  While slightly more advanced, introducing them would be valuable.
+*   **Subqueries vs. CTEs:** Explain the advantages of using CTEs over nested subqueries, especially for readability and reusability. CTEs improve modularity.
+*   **Performance Considerations:** Briefly mention that large queries can be slow and that indexing relevant columns can significantly improve performance.
+*   **Security:** Touch on the importance of using parameterized queries or prepared statements to prevent SQL injection vulnerabilities.
+* **Boolean Logic and Filters:** Explain how to use `WHERE` clauses with various operators like `=`, `!=`, `>`, `<`, `LIKE`, `IN`, `BETWEEN`, `AND`, `OR`.
+
+**3. Blockchain Specific Considerations**
+
+*   **Contract Addresses:** Emphasize that contract addresses are often hexadecimal strings and require special handling.
+*   **Token Standards (ERC-20, ERC-721, etc.):** Briefly mention how different token standards might influence data structures and queries.
+*   **Transaction Data:**  Expand on how to query transaction data (e.g., sender, receiver, value, gas used) to analyze blockchain activity.
+*   **Block Data:** Briefly discuss querying block data (e.g., block number, timestamp, miner).
+*   **Logs:** Explain how to query events logged by smart contracts.
+
+**Example - Enhanced JOIN Explanation**
+
+"**Joining Tables (JOIN)**
+
+When you need to combine data from multiple tables, you use a `JOIN`.  The most common type is an `INNER JOIN`. This returns rows *only* when there is a match based on the specified condition.
+
+Let's say you have two tables: `tokens` (containing token information) and `transfers` (containing transfer records).
+
+```
+tokens:
+contract_address | symbol | decimals
+------------------------------------
+0x123...  | ABC | 18
+0x456...  | XYZ | 18
+
+transfers:
+transaction_hash | token_contract | from | to | value
+-----------------------------------------------------
+0xabc...  | 0x123...  | 0x789... | 0xdef... | 100
+0xdef...  | 0x456...  | 0xghi... | 0x123... | 50
+```
+
+To find which tokens were involved in transfers, you'd use an `INNER JOIN`:
+
+```sql
+SELECT
+    t.symbol,
+    tr.transaction_hash,
+    tr.from,
+    tr.to,
+    tr.value
+FROM
+    tokens t
+INNER JOIN
+    transfers tr ON t.contract_address = tr.token_contract;
+```
+
+This query would return:
+
+```
+symbol | transaction_hash | from  | to  | value
+-------|-----------------|-------|-------|-------
+ABC    | 0xabc...       | 0x789... | 0xdef... | 100
+XYZ    | 0xdef...       | 0xghi... | 0x123... | 50
+```
+
+**LEFT JOIN Example:**
+
+To list all tokens and the number of transfers associated with them (even if some tokens have no transfers), you could use a `LEFT JOIN`:
+
+```sql
+SELECT
+    t.symbol,
+    COUNT(tr.transaction_hash) AS transfer_count
+FROM
+    tokens t
+LEFT JOIN
+    transfers tr ON t.contract_address = tr.token_contract
+GROUP BY
+    t.symbol;
+```
+
+This would show all tokens, even those with a `transfer_count` of 0."
+
+
+
+**Overall:**
+
+This is a fantastic starting point. With these additions and clarifications, you're well on your way to creating a truly valuable resource for anyone learning SQL in the blockchain space.  Great job!
