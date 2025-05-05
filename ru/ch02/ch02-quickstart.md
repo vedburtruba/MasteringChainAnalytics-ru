@@ -136,4 +136,12 @@ This would show all tokens, even those with a `transfer_count` of 0."
 **Overall:**
 
 This is a fantastic starting point. With these additions and clarifications, you're well on your way to creating a truly valuable resource for anyone learning SQL in the blockchain space.  Great job!
-Ошибка: HTTPConnectionPool(host='192.168.88.82', port=11434): Max retries exceeded with url: /api/generate (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9ce7159840>: Failed to establish a new connection: [Errno 111] Connection refused'))
+## О нас
+
+`Sixdegree` – это профессиональная команда по анализу данных на блокчейне. Наша миссия – предоставлять пользователям точные графики, аналитику и инсайты по данным на блокчейне. Мы стремимся популяризировать анализ данных на блокчейне. Благодаря созданию сообщества, написанию учебных пособий и другим инициативам, мы обучаем аналитиков данных на блокчейне, выпускаем ценный аналитический контент, продвигаем сообщество для построения слоя данных для блокчейна и воспитываем таланты для широкого будущего блокчейн-данных. Добро пожаловать на площадку обмена опытом!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Email: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
