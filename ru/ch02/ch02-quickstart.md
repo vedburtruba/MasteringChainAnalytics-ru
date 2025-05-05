@@ -136,3 +136,4 @@ This would show all tokens, even those with a `transfer_count` of 0."
 **Overall:**
 
 This is a fantastic starting point. With these additions and clarifications, you're well on your way to creating a truly valuable resource for anyone learning SQL in the blockchain space.  Great job!
+Ошибка: HTTPConnectionPool(host='192.168.88.82', port=11434): Max retries exceeded with url: /api/generate (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9ce7159840>: Failed to establish a new connection: [Errno 111] Connection refused'))
