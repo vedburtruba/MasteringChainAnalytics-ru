@@ -230,3 +230,42 @@ ORDER BY 3 DESC
 ![](img/ch03_image_08.png)
 
 Вы можете заметить, что таблица не возвращает ровно 100 строк данных. Это связано с тем, что некоторые недавно появившиеся токены еще не были добавлены в таблицу данных в Dune.
+## Запрос 7: 100 последних записей пулов ликвидности
+
+Когда проект запускает новый токен ERC20 и поддерживает его листинг для торговли, пользователи Uniswap могут создавать соответствующие пулы ликвидности, чтобы обеспечить обмен для других пользователей. Например, токен XEN – недавний и заметный случай.
+
+Мы можем отслеживать новые тенденции, запрашивая недавно созданные пулы ликвидности. Следующий запрос связан с таблицей `tokens.erc20` и использует несколько соединений с той же таблицей с использованием разных псевдонимов для получения символов для различных токенов. Запрос также демонстрирует вывод визуализированной таблицы, генерирование гиперссылок с использованием конкатенации строк и многое другое.
+
+```sql
+with last_created_pools as (
+    select p.evt_block_time,
+        t0.symbol as token0_symbol,
+        p.token0,
+        t1.symbol as token1_symbol,
+        p.token1,
+        p.fee,
+        p.pool,
+        p.evt_tx_hash
+    from uniswap_v3_ethereum.Factory_evt_PoolCreated p
+    inner join tokens.erc20 t0 on p.token0 = t0.contract_address and t0.blockchain = 'ethereum'
+    inner join tokens.erc20 t1 on p.token1 = t1.contract_address and t1.blockchain = 'ethereum'
+    order by p.evt_block_time desc
+    limit 100
+)
+
+select evt_block_time,
+    token0_symbol || '-' || token1_symbol || ' ' || format('%,.2f', fee / 1e4) || '%' as pool_name,
+    '<a href=https://etherscan.io/address/' || cast(pool as varchar) || ' target=_blank>' || cast(pool as varchar) || '</a>' as pool_link,
+    token0,
+    token1,
+    fee,
+    evt_tx_hash
+from last_created_pools
+order by evt_block_time desc
+```
+
+Ссылка на этот запрос на Dune: [https://dune.com/queries/1455897](https://dune.com/queries/1455897)
+
+Мы добавляем визуализацию диаграммы типа "Таблица" к запросу, устанавливаем заголовок как "Список последних созданных пулов ликвидности" и настраиваем параметры визуализации по мере необходимости, прежде чем добавлять его на панель управления.
+
+![](img/ch03_image_09.png)
