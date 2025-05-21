@@ -22,3 +22,61 @@
 Красная рамка внизу показывает несколько категорий наборов данных, в настоящее время поддерживаемых движком Dune V2. Щелчок по имени категории набора данных полужирным шрифтом перенесет вас на следующий уровень для просмотра различных схем данных и имен таблиц в этой категории. После этого вы также увидите раскрывающийся список с параметром по умолчанию «Все цепочки», который можно использовать для фильтрации схем данных и таблиц на указанном блокчейне. При переходе на уровень таблицы щелчок по имени таблицы расширит список полей в таблице. Щелчок по значку ">>" справа от имени таблицы вставит имя таблицы (в формате `schema_name.table_name`) в редактор запросов в текущую позицию курсора. При просмотре иерархическим способом вы также можете вводить ключевые слова для дальнейшего поиска и фильтрации на текущем уровне. Различные типы таблиц данных имеют разную глубину. Следующая картина показывает пример просмотра декодированных таблиц данных.
 
 ![](img/ch04_5-2.jpg)
+
+Okay, this is a comprehensive explanation of three key tables in the Dune ecosystem: `ethereum.transactions`, `ethereum.traces`, and `ethereum.logs`. Here's a breakdown of the key takeaways and how they fit together, structured for clarity and ease of use.  I'm also adding a summary table at the end.
+
+**1. ethereum.transactions: The Core Transaction Record**
+
+*   **Purpose:** This table stores the fundamental information about transactions on the Ethereum blockchain.  Think of it as the main record of what *happened*.
+*   **Key Fields:**
+    *   `block_time`, `block_number`: When the transaction was included in a block. Crucial for filtering and time-based analysis.
+    *   `tx_hash`: Unique identifier for the transaction.
+    *   `from`, `to`:  Addresses involved in the transaction.  `from` is the sender, `to` is the receiver.
+    *   `value`: The amount of ETH transferred directly in the transaction.  *Important:* If a transaction involves a smart contract interacting with another contract, the value field may not represent the full transfer amount.
+*   **Performance Considerations:**  This is a huge table. Always filter by `block_number` or `block_time` to improve query performance.
+*   **Use Cases:**  Tracking ETH transfers, identifying common transaction patterns, and providing a baseline for further analysis.
+
+**2. ethereum.traces: Transaction Execution Details**
+
+*   **Purpose:**  `ethereum.traces` goes deeper, providing detailed information about *how* a transaction was executed.  It's critical for understanding complex interactions and native token transfers.
+*   **Key Fields:**
+    *   `block_time`, `block_number`, `tx_hash`, `success`: Same as `ethereum.transactions`, plus execution-related details.
+    *   `value`: This is the *actual* amount of ETH transferred in scenarios involving smart contracts.  It can differ from the `value` field in `ethereum.transactions`.
+    *   `type`:  Important for identifying contract creation. If `type = 'create'`, the `to` field represents the newly created contract address.
+*   **Key Difference from `ethereum.transactions`:**  `ethereum.traces` is essential for tracking native token transfers (ETH, etc.) that are *not* directly represented in `ethereum.transactions` due to smart contract interactions.
+*   **Performance:** Also large, so filtering is vital.
+*   **Use Cases:** Calculating native token balances, identifying contract creation events (through `type = 'create'`), and analyzing gas usage.  The creation traces table (`ethereum.creation_traces`) is derived from this table and more efficient for identifying contracts.
+
+**3. ethereum.logs: Raw Event Logs**
+
+*   **Purpose:** Stores all event logs emitted by smart contracts. This is a "last resort" table, used when decoding isn't possible or when dealing with contracts that haven’s been decoded yet.
+*   **Key Fields:**
+    *   `block_time`, `block_number`, `tx_hash`, `contract_address`: Identifies the event.
+    *   `topic1`, `topic2`, `topic3`, `topic4`:  Topic fields contain hashed event signatures and indexed parameters. `topic1` is the key – it's the event signature.  The others hold indexed event parameters.
+    *   `data`: The raw, hexadecimal data containing *unindexed* event parameters.  Requires decoding.
+*   **Important Considerations:**
+    *   Decoding the `data` field is more complex and requires understanding the smart contract's event definitions.
+    *   Topic fields are critical for filtering by event.
+*   **Use Cases:** When specific events are needed but decoding isn’t available, or to retrieve raw event data for analysis.
+
+**Relationship Between Tables**
+
+*   `ethereum.transactions` provides the high-level transaction details.
+*   `ethereum.traces` provides execution details and is crucial for native token transfers and contract creation.
+*   `ethereum.logs` stores the raw, undecoded event logs emitted by smart contracts.
+
+**Summary Table**
+
+| Feature | `ethereum.transactions` | `ethereum.traces` | `ethereum.logs` |
+|---|---|---|---|
+| **Purpose** | Core Transaction Record | Transaction Execution Details | Raw Event Logs |
+| **Value Field** | Direct ETH Transfer | Actual ETH Transfer (including smart contract interactions) | N/A |
+| **Contract Creation** | N/A | `type = 'create'` | N/A |
+| **Native Token Transfers** | May be incomplete | Accurate | N/A |
+| **Decoding Required** | No | No (for contract creation) | Yes (for `data` field) |
+| **Performance** | Filter by `block_number` or `block_time` | Filter by `block_number` or `block_time` | Filter by topic fields, `block_number` or `block_time`|
+| **Use Cases** | Tracking Transfers, Basic Analysis | Token Balances, Contract Creation, Gas Usage | Retrieving Raw Event Data, Decoding Complex Events |
+
+
+
+This comprehensive explanation, along with the summary table, should provide a strong foundation for utilizing these crucial Dune tables. Remember to always filter your queries to optimize performance!
