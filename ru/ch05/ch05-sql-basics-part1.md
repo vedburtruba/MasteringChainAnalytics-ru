@@ -78,3 +78,12 @@ Let's analyze each query and its purpose as presented.
 **5.  Overall Assessment**
 
 This is a very good and useful explanation of SQL concepts and how they apply to data analysis. The use of Dune Analytics examples makes it practical and relatable. Addressing the minor improvements listed above would elevate the explanation even further and make it accessible to a wider range of users.
+## О нас
+
+`Sixdegree` – это профессиональная команда по анализу данных на блокчейне. Наша миссия – предоставлять пользователям точные графики, анализ и инсайты по данным на блокчейне. Мы стремимся популяризировать анализ данных на блокчейне. Благодаря созданию сообщества и написанию учебных пособий, среди прочих инициатив, мы обучаем аналитиков данных на блокчейне, выпускаем ценный аналитический контент, продвигаем сообщество для построения слоя данных для блокчейна и воспитываем таланты для широкого будущего приложений данных для блокчейна. Добро пожаловать на площадку обмена опытом в сообществе!
+
+- Сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Email: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
