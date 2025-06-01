@@ -93,3 +93,52 @@ profiles_total as (
 select if(1 < 2, 'a', 'b') -- если результат условия истинный, вернуть 'a', иначе вернуть 'b'
     ,if('a' = 'A', 'case-insensitive', 'case-sensitive') 
  ```
+
+## Общие функции для обработки строк
+
+1. Функция Substring()
+
+Когда есть определенные ситуации, когда нам приходится работать с исходной таблицей данных `transactions` или `logs` и декодировать `data` в ней, нам нужно извлечь часть строки из нее, а затем выполнить целевой процесс преобразования. В этом случае нам необходимо использовать функцию Substring. Синтаксис функции Substring — `substring( expr, pos [, len])` или `substring (expr FROM pos [FOR len] )`, которая в выражении `expr`, начиная с позиции `pos`, извлекает `len` символов и возвращает. Если `len` опущена, строка извлекается до конца строки.
+
+2. Функция Concat() и оператор ||
+
+Функция `concat(expr1, expr2 [, ...])` соединяет несколько выражений вместе. ) соединяет несколько выражений вместе и часто используется для связывания строк. Оператор `||` имеет ту же функцию, что и Concat.
+
+``` sql
+select concat('a', ' ', 'b', ' c') -- concat multi string
+    , 'a' || ' ' || 'b' || ' c' -- same as concat
+```
+
+3. Функция Right()
+
+Функция `right(str, len)` извлекает `len` символов с правого края строки `str`. В нашем случае исходная таблица данных, такая как `logs`, содержит связанные группы из 64 символа, хранящиеся в `data`. Для адреса контракта или адреса пользователя он представлен 40 символами. При сохранении он заполняется `0` слева, чтобы заполнить 64-битную длину. При извлечении адреса необходимо извлечь 40 символов с правого края и добавить префикс '0x' для восстановления правильного формата адреса.
+
+Обратите внимание, что в Dune SQL прямое использование функции `right()` может вернуть синтаксическую ошибку, что можно решить, поместив имя функции в двойные кавычки, то есть используя `"right"()`. Поскольку этот метод громоздкий, можно использовать функцию substring с параметром отрицательной позиции начала для выполнения извлечения с правой стороны с легкостью.
+
+Ниже приведен исчерпывающий пример использования вышеперечисленных функций. Этот пример декодирует записи перекрестной цепи в Arbitrum из таблицы `logs`, используя несколько методов.
+
+``` sql
+select date_trunc('day', block_time) as block_date, --truncate a timestamp to day
+    concat('0x', "right"(substring(cast(data as varchar), 3 + 64 * 2, 64), 40)) as address, -- Extract the third part of the data column and convert it into an address, starting from the third character, each 64 characters as a group.
+    concat('0x', "right"(substring(cast(data as varchar), 3 + 64 * 3, 64), 40)) as token, -- Extract part 4 of data and convert it to address
+    concat('0x', substring(substring(cast(data as varchar), 3 + 64 * 3, 64), -40, 40)) as same_token, -- Extract part 4 of data and convert it to address
+    substring(cast(data as varchar), 3 + 64 * 4, 64) as hex_amount, -- Extract part 5 of data column
+    bytearray_to_uint256(bytearray_substring(data, 1 + 64 * 3, 64)) as amount, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 5, 64) as to, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 6, 64) as fee, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 7, 64) as gas, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 6, 64) as gasPrice, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 1, 64) as value, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 2, 64) as input, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 0, 64) as nonce, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 7, 64) as v, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 8, 64) as r, -- Extract part 5 of data column
+    substring(cast(data as varchar), 3 + 64 * 9, 64) as s, -- Extract part 5 of data column
+    block_time >= now() - interval '30' day
+limit 10
+```
+
+Связанные ссылки для приведенного выше запроса:
+
+- Запрос: [https://dune.com/queries/1647016](https://dune.com/queries/1647016)
+- Описание: [Функции и операторы строк](https://trino.io/docs/current/functions/string.html)
