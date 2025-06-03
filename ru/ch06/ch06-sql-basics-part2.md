@@ -240,3 +240,16 @@ Okay, this is a great overview of window functions, particularly focusing on `RO
 
 
 By incorporating these points, you can gain a more comprehensive understanding and practical application of window functions in your SQL queries.  Let me know if you'd like more examples or want to dive deeper into a particular aspect of window functions.
+## Функция array_agg()
+
+Если вы хотите объединить определенный столбец каждой строки в результирующем наборе данных запроса, вы можете использовать функцию array_agg(). Если вы хотите объединить несколько столбцов данных вместе (представьте себе экспорт результатов запроса в формате CSV), вы можете рассмотреть возможность использования метода конкатенации строк, описанного выше, для объединения нескольких столбцов данных в один столбец, а затем применить функцию array_agg(). Вот простой пример:
+
+``` sql
+select array_agg(contract_address) from
+(
+    select contract_address 
+    from ethereum.logs
+    where block_time >= current_date
+    limit 10
+) t
+```
