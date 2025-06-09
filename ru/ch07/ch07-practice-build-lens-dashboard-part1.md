@@ -47,3 +47,91 @@
 За исключением таблицы Transfer, которая является таблицей событий, остальные упомянутые таблицы являются таблицами вызовов функций. Таблица данных с суффиксом `WithSig` обозначает операции, выполняемые посредством авторизации подписью. Это позволяет использовать API или позволяет другим авторизованным сторонам выполнять определенные операции от имени пользователя. Важно агрегировать данные из связанных таблиц при анализе таких типов, как таблицы постов, чтобы получить всестороннее понимание.
 
 В предоставленном списке есть несколько других таблиц данных с различными методами. Все эти таблицы сгенерированы под смарт-контрактом LensHub, и они взаимодействуют с адресом LensHub, а именно `0xdb46d1dc155634fbc732f92e853b10b288ad5a1d`. Для анализа общих данных пользователей Lens рекомендуется запрашивать оригинальную таблицу polygon.transactions, чтобы извлечь данные, связанные с этим адресом контракта. Это обеспечит полный набор данных для целей анализа.
+Okay, this is a detailed guide for building a Dune Analytics dashboard for Lens Protocol. Here's a breakdown of the steps, along with clarifications and considerations based on the provided text. I'll structure it into the core tasks and then provide helpful additions.
+
+**I. Core Tasks: Building the Lens Protocol Dashboard**
+
+**1. Setup & First Query: Total Transactions and Users**
+
+*   **Goal:** Get a snapshot of the overall activity on Lens.
+*   **SQL Query (First Query - as provided):**
+
+```sql
+with daily_count as (
+    select date_trunc('day', block_time) as block_date,
+        count(*) as transaction_count,
+        count(distinct "from") as user_count
+    from polygon.transactions
+    where "to" = 0xdb46d1dc155634fbc732f92e853b10b288ad5a1d   -- LensHub
+        and block_time >= date('2022-05-16')  -- contract creation date
+    group by 1
+    order by 1
+)
+
+select block_date,
+    transaction_count,
+    user_count,
+    sum(transaction_count) over (order by block_date) as accumulate_transaction_count,
+    sum(user_count) over (order by block_date) as accumulate_user_count
+from daily_count
+order by block_date
+```
+
+*   **Dune Steps:**
+    *   Create a new query in Dune Analytics.
+    *   Paste the SQL query.
+    *   Confirm the source is `polygon.transactions` (adjust if your chain is different).
+    *   Run the query.
+    *   Create two `Counter` visualizations:
+        *   `transaction_count` (title: "Lens Daily Transactions")
+        *   `user_count` (title: "Lens Daily Users")
+    *   Add these visualizations to a new dashboard.
+
+**2. Daily Trends: Transactions vs. Users**
+
+*   **Goal:**  Visualize the daily activity, including cumulative totals.
+*   **SQL Query:** (Same as above, it's designed to produce daily and cumulative data)
+*   **Dune Steps:**
+    *   Create a `Bar Chart` visualization using `transaction_count` as the Y column.
+    *   Create another `Bar Chart` visualization using `user_count` as the Y column.
+    *   Add both to the dashboard.
+    *   **Important (Cumulative Charts):**  In the visual settings, select "Enable right y-axis" for both charts, assign the cumulative columns (`accumulate_transaction_count` and `accumulate_user_count`) to the right y-axis. Change the visual "Chart Type" of the cumulative charts to `Area` or `Line` for better visualization.
+
+**3. Comparison Chart (Transactions vs. Users)**
+
+*   **Goal:**  Compare the daily volume of transactions versus the daily active users.
+*   **SQL Query:** (Uses the same query as the daily trends)
+*   **Dune Steps:**
+    *   Create a visualization:  `Bar Chart`
+    *   `Y column 1`:  `transaction_count`
+    *   `Y column 2`:  `user_count`
+    *   Enable the "right y-axis".
+    *   Assign `user_count` to the right y-axis.
+    *   Change the chart type to `Line`.
+    *   Add to the dashboard.
+
+**II. Key Considerations & Potential Improvements (Based on Text)**
+
+*   **`to = 0xdb46d1dc155634fbc732f92e853b10b288ad5a1d` (LensHub Contract Address):** *This is critical.* Double-check this contract address to ensure it's correct for the data you want to analyze.  An incorrect contract will pull incorrect data.
+*   **`block_time >= date('2022-05-16')` (Start Date):** This defines the beginning of your data range.  Adjust if necessary.
+*   **Cumulative Users vs. Total Unique Users:** The provided code correctly highlights that cumulative user counts are *not* the same as the total number of unique users.  A more advanced query to calculate true unique users would require identifying the *first* transaction for each user and then counting those.
+*   **Window Functions (`sum() over ()`):** These are essential for calculating cumulative values.  Understanding how they work is crucial.
+*   **Right Y-Axis:** This is essential for charts where the scales of the data are very different (e.g., a large volume of transactions versus a much smaller number of users). It allows both datasets to be displayed effectively.
+*   **Chain Specifics:** The provided SQL assumes polygon.transactions . Make changes to the source chain if needed.
+*   **Further Analysis Possibilities:**
+    *   **Popular Profiles:** Identify accounts with the most followers or most posts.
+    *   **Activity by Collection:** Analyze activity related to specific NFT collections deployed on Lens.
+    *   **Average Transaction Value:**  Calculate the average value of transactions on Lens.
+    *   **Activity by Country/Region:** (More complex and might require additional data sources).
+* **Forking Queries:** If you like someone else’s query, use the “fork” feature to make it your own and customize it.
+
+**III.  Dune-Specific Tips**
+
+*   **Naming Conventions:** Use descriptive names for your queries and visualizations.
+*   **Comments:** Add comments to your SQL code to explain your logic.
+*   **Parameterization:**  If you're going to reuse a query with different parameters (e.g., a different start date), consider using parameterized queries.
+*   **Scheduling:**  Schedule your queries to run automatically and update the dashboard regularly.
+
+
+
+By following these steps and considering the additional points, you're well-equipped to create a functional and insightful Dune Analytics dashboard for Lens Protocol. Remember that ongoing data analysis and visualization are iterative processes - continually refine your queries and visualizations based on your findings.
