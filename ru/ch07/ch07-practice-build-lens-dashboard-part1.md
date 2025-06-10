@@ -135,3 +135,42 @@ order by block_date
 
 
 By following these steps and considering the additional points, you're well-equipped to create a functional and insightful Dune Analytics dashboard for Lens Protocol. Remember that ongoing data analysis and visualization are iterative processes - continually refine your queries and visualizations based on your findings.
+## Анализ данных профиля создателя
+
+Учетные записи профиля создателя Lens в настоящее время ограничены пользователями в списке разрешений лицензии для создания, и данные для создания профилей хранятся в таблице `createProfile`. С помощью следующего запроса мы можем рассчитать количество созданных профилей на сегодняшний день.
+
+```sql
+select count(*) as profile_count
+from lens_polygon.LensHub_call_createProfile
+where call_success = true   -- Считать только успешные вызовы
+```
+
+Создайте визуализационную диаграмму типа Counter с заголовком "Общее количество профилей" и добавьте ее на панель данных.
+
+Нас также интересует, как меняются и растут профили создателей со временем. Используйте следующий запрос, чтобы увидеть, как профили создаются ежедневно и ежемесячно.
+
+```sql
+with daily_profile_count as (
+    select date_trunc('day', call_block_time) as block_date,
+        count(*) as profile_count
+    from lens_polygon.LensHub_call_createProfile
+    where call_success = true
+    group by 1
+    order by 1
+)
+
+select block_date,
+    profile_count,
+    sum(profile_count) over (order by block_date) as accumulate_profile_count
+from daily_profile_count
+order by block_date
+```
+
+Создайте и добавьте визуализационные диаграммы на панель управления аналогичным образом. Отображение показано на рисунке ниже:
+
+![](img/ch07_image_05.png)
+
+Ссылки на вышеуказанные два запроса на Dune:
+- [https://dune.com/queries/1534486](https://dune.com/queries/1534486)
+- [https://dune.com/queries/1534927](https://dune.com/queries/1534927)
+- [https://dune.com/queries/1534950](https://dune.com/queries/1534950)
