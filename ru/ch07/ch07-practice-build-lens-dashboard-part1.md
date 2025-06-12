@@ -554,3 +554,106 @@ SELECT data ->> 'handle' AS handleName FROM Profile;
 В таблице `createProfile` поле `data` содержит JSON-строку, содержащую информацию о профиле.  Мы извлекаем информацию о профиле из этого JSON-поля.  Поле `data` содержит информацию о профиле, в том числе имя, описание, изображения и т.д.  Внутри этого поля содержится поле `handle`, которое содержит имя.  Поле `handle` имеет вид `<handleName>.lens`.  С помощью ":"-нотации можно извлекать информацию о доменном имени и пользовательском адресе из JSON-строки, сохраненной в поле `data`.
 
 Для этого используется оператор `->`.  Оператор `->` позволяет извлечь значение по ключу из объекта JSON.  Например, чтобы получить имя профиля, можно
+## Поиск зарегистрированных доменов
+
+В дополнение к отслеживанию распределения зарегистрированных доменов Lens, пользователи также заинтересованы в деталях зарегистрированных доменов. Для этого может быть предоставлена функция поиска, которая позволит пользователям искать подробный список зарегистрированных доменов. Поскольку в настоящее время зарегистрировано около 100 000 учетных записей Lens, мы ограничиваем запрос ниже, чтобы вернуть максимум 10 000 результатов поиска.
+
+Во-первых, мы можем определить параметр `{{name_contains}}` в запросе (Dune использует две фигурные скобки вокруг имени параметра, и тип параметра по умолчанию — строковый тип `Text`). Затем используйте ключевое слово`like` а также символ подстановки `%` для поиска доменов с определенным содержанием:
+
+```sql
+with profile_created as (
+    select json_value(vars, 'lax $.to') as user_address,
+        json_value(vars, 'lax $.handle') as handle_name,
+        replace(json_value(vars, 'lax $.handle'), '.lens', '') as short_name,
+        call_block_time,
+        output_0 as profile_id,
+        call_tx_hash
+    from lens_polygon.LensHub_call_createProfile
+    where call_success = true    
+)
+
+select call_block_time,
+    profile_id,
+    handle_name,
+    short_name,
+    call_tx_hash
+from profile_created
+where short_name like '%{{name_contains}}%'
+order by call_block_time desc
+limit 1000
+```
+
+Чтобы определить длину домена, используйте параметр `{{name_length}}`:
+
+```sql
+select call_block_time,
+    profile_id,
+    handle_name,
+    short_name,
+    call_tx_hash
+from profile_created
+where length(short_name) = cast('{{name_length}}' as integer)
+order by call_block_time desc
+limit 1000
+```
+
+И чтобы найти домены, состоящие только из цифр или букв, используйте параметр `{{name_pattern}}`:
+
+```sql
+select call_block_time,
+    profile_id,
+    handle_name,
+    short_name,
+    call_tx_hash
+from profile_created
+where (case when '{{name_pattern}}' = 'Pure Digits' then regexp_like(short_name, '^[0-9]+$')
+            when '{{name_pattern}}' = 'Pure Letters' then regexp_like(short_name, '^[a-z]+$')
+            else 1 = 1
+        end)
+order by call_block_time desc
+limit 1000
+```
+
+Поскольку мы используем `and` для связывания условий, все условия должны быть выполнены одновременно, что несколько ограничивает поиск. Мы вносим соответствующие корректировки и добавляем параметр "0" в качестве значения по умолчанию для `name_length`. Когда фильтр не введен или не выбран пользователем, он игнорируется. Это делает поисковые запросы очень гибкими.
+
+```sql
+with profile_created as (
+    select json_value(vars, 'lax $.to') as user_address,
+        json_value(vars, 'lax $.handle') as handle_name,
+        replace(json_value(vars, 'lax $.handle'), '.lens', '') as short_name,
+        call_block_time,
+        output_0 as profile_id,
+        call_tx_hash
+    from lens_polygon.LensHub_call_createProfile
+    where call_success = true    
+)
+
+select call_block_time,
+    profile_id,
+    handle_name,
+    short_name,
+    '<a href=https://polygonscan.com/tx/' || cast(call_tx_hash as varchar) || ' target=_blank>Polyscan</a>' as link,
+    call_tx_hash
+from profile_created
+where (case when '{{name_contains}}' <> 'keyword' then short_name like '%{{name_contains}}%' else 1 = 1 end)
+    and (case when cast('{{name_length}}' as integer) < 5 then 2 = 2
+            when cast('{{name_length}}' as integer) >= 20 then length(short_name) >= 20
+            else length(short_name) = cast('{{name_length}}' as integer)
+        end)
+    and (case when '{{name_pattern}}' = 'Pure Digits' then regexp_like(short_name, '^[0-9]+$')
+            when '{{name_pattern}}' = 'Pure Letters' then regexp_like(short_name, '^[a-z]+$')
+            else 3 = 3
+        end)
+order by call_block_time desc
+limit 1000
+```
+
+Мы добавляем график визуализации типа Таблицы к этому запросу и добавляем его на панель управления данными. При добавлении параметра запроса к панели управления данными все параметры автоматически добавляются в заголовок панели. Мы можем войти в режим редактирования и перетащить параметр в нужное место. Отображение после внесения изменений:
+
+[Ссылка на скриншот]
+
+Ссылка на связанные запросы:
+
+*   [Ссылка на запрос 1](ссылка)
+*   [Ссылка на запрос 2](ссылка)
+*   [Ссылка на запрос 3](ссылка)
