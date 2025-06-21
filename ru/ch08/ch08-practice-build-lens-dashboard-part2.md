@@ -44,3 +44,82 @@ group by 1
 Ссылка на референс для вышеуказанного запроса на Dune:
 - [https://dune.com/queries/1562662](https://dune.com/queries/1562662)
 - [https://dune.com/queries/1553030](https://dune.com/queries/1553030)
+## Анализ активности пользователей Lens: статистика и графики
+
+### Статистика по количеству публикаций активных профилей
+
+Ежедневное количество новых публикаций пользователей Lens – важный показатель общего уровня активности. Мы пишем запрос для подсчета количества публикаций в день. CTE `post_data` в этом запросе точно такой же, как и раньше, поэтому мы опускаем ее детали в приведенном ниже коде. Поскольку мы также хотим подсчитать количество публикаций в день и вернуть накопленное количество публикаций, мы определяем CTE `post_daily_summary` в качестве промежуточного этапа для упрощения понимания SQL-кода. Соответствующий SQL-код выглядит следующим образом:
+
+```sql
+with post_data as (
+    -- Получение данных о публикациях из таблиц LensHub_call_post и LensHub_call_postWithSig
+),
+
+post_daily_summary as (
+    select date_trunc('day', call_block_time) as block_date,
+        count(*) post_count,
+        count(distinct profile_id) as profile_count
+    from post_data
+    group by 1
+)
+
+select block_date,
+    post_count,
+    profile_count,
+    sum(post_count) over (order by block_date) as accumulate_post_count
+from post_daily_summary
+order by block_date
+```
+
+Отображение после визуализации результатов запроса и добавления их на информационную панель выглядит следующим образом:
+
+[image_11.png](img/image_11.png)
+
+Ссылка на этот запрос на Dune:
+- [https://dune.com/queries/1555124](https://dune.com/queries/1555124)
+
+### Топ-100 активных профилей по количеству публикаций за 30 дней
+
+Аналогично, нас может интересовать статистика по профилям с наибольшим количеством публикаций за последний период. Для этого нам нужно просто добавить условия фильтрации по дате, чтобы фильтровать публикации за последние 30 дней в указанном выше CTE `post_data`, а затем выполнить сводную статистику по дате. SQL-код выглядит следующим образом:
+
+```sql
+with post_data as (
+    select call_block_time,
+        call_tx_hash,
+        output_0 as post_id,
+        json_value(vars, 'lax $.profileId') as profile_id, -- Извлечение элемента JSON строки
+        json_value(vars, 'lax $.contentURI') as content_url,
+        json_value(vars, 'lax $.collectModule') as collection_module,
+        json_value(vars, 'lax $.referenceModule') as reference_module
+    from lens_polygon.LensHub_call_post
+    where call_success = true
+        and call_block_time >= now() - interval '30' day
+    
+    union all
+    
+    select call_block_time,
+        call_tx_hash,
+        output_0 as post_id,
+        json_value(vars, 'lax $.profileId') as profile_id, -- Извлечение элемента JSON строки
+        json_value(vars, 'lax $.contentURI') as content_url,
+        json_value(vars, 'lax $.collectModule') as collection_module,
+        json_value(vars, 'lax $.referenceModule') as reference_module
+    from lens_polygon.LensHub_call_postWithSig
+    where call_success = true
+        and call_block_time >= now() - interval '30' day
+)
+
+select profile_id,
+    count(*) as post_count
+from post_data
+group by 1
+order by 2 desc
+limit 100
+```
+
+Мы можем добавить гистограмму для отображения количества публикаций 100 аккаунтов с наибольшим количеством публикаций за последние 30 дней и добавить таблицу для вывода подробностей. Отображение после добавления соответствующей диаграммы на информационную панель выглядит следующим образом:
+
+![](img/ch08_image_12.png)
+
+Ссылка на этот запрос на Dune:
+- [https://dune.com/queries/1559981](https://dune.com/queries/1559981)
