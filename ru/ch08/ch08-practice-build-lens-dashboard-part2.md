@@ -123,3 +123,56 @@ limit 100
 
 Ссылка на этот запрос на Dune:
 - [https://dune.com/queries/1559981](https://dune.com/queries/1559981)
+
+## Анализ данных комментариев к профилям
+
+### Анализ количества комментариев к наиболее популярным профилям
+
+Данные о комментариях Lens похожи на данные о постах, которые хранятся в таблицах `LensHub_call_comment` и `LensHub_call_commentWithSig` в зависимости от источника данных. Основываясь на текущих функциях протокола Lens, пользователи должны были создать свой собственный Профиль, чтобы комментировать посты других создателей. В таблице данных о комментариях отслеживается идентификатор профиля комментатора. Одновременно количество постов каждого создателя увеличивается с 1. То есть посты от разных создателей могут иметь одинаковое число. Нам нужно сопоставить идентификатор профиля создателя с его идентификатором публикации, чтобы получить уникальный номер. SQL выглядит следующим образом:
+
+``` sql
+select call_block_time,
+    call_tx_hash,
+    output_0 as comment_id, -- comment id
+    json_value(vars, 'lax $.profileId') as profile_id_from, -- Profile ID of the comment
+    json_value(vars, 'lax $.contentURI') as content_url, -- comment content link
+    json_value(vars, 'lax $.pubIdPointed') as publication_id_pointed, -- Commented Publication ID
+    json_value(vars, 'lax $.profileIdPointed') as profile_id_pointed, -- Profile ID of Creator who were commented on
+    json_value(vars, 'lax $.profileIdPointed') || '-' || json_value(vars, 'lax $.pubIdPointed') as unique_publication_id  -- combine to generate unique id
+from lens_polygon.LensHub_call_comment
+where call_success = true
+limit 10
+```
+
+Мы также получаем общие данные о комментариях, определяя дополнительное CTE, чтобы график Counter мог быть выведен в том же запросе, и данные о 1000 аккаунтах с наибольшим количеством комментариев и данные о всех аккаунтах могли быть сопоставлены. После визуализации результатов запроса и добавления их на панель данных отображение выглядит следующим образом:
+
+![](img/ch08_image_13.png)
+
+Ссылка на запрос выше на Dune:
+- [https://dune.com/queries/1560028](https://dune.com/queries/1560028)
+
+### Статистика наиболее часто комментируемых публикаций
+
+Каждый комментарий предназначен для конкретного объекта (Публикация) (здесь автор полагает, что это должно быть Пост, пожалуйста, исправьте меня, если есть какое-либо недоразумение). Имеет определенную ценность анализ публикаций, которые были прокомментированы чаще всего. Мы пишем запрос для подсчета 500 наиболее часто комментируемых публикаций и сравниваем его со всеми данными о комментариях. SQL выглядит следующим образом:
+
+``` sql
+with comment_data as (
+    -- get comment data from LensHub_call_comment and LensHub_call_commentWithSig tables
+)
+
+select profile_id_pointed,
+    publication_id_pointed,
+    unique_publication_id,
+    count(*) as comment_count
+from comment_data
+group by 1, 2, 3
+order by 4 desc
+limit 500
+```
+
+Аналогично, мы добавляем дополнительное CTE для получения данных о всех комментариях и сравниваем данные о 500 наиболее часто комментируемых публикациях с глобальными данными. Добавляем соответствующий визуальный график на панель данных, эффект выглядит следующим образом:
+
+![](img/ch08_image_14.png)
+
+Ссылка на запрос выше на Dune:
+- [https://dune.com/queries/1560578](https://dune.com/queries/1560578)
