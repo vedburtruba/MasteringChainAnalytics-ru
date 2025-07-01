@@ -267,3 +267,60 @@ select (case when follower_count >= 10000 then '10K+ Followers'
 
 Ссылка на запрос в Dune:
 - [https://dune.com/queries/1555185](https://dune.com/queries/1555185)
+
+## Комплексный анализ операций профиля
+
+Сопоставляя предыдущий контент, можно увидеть, что создатели (пользователи с Профилем) могут публиковать, комментировать или зеркалировать данные других создателей, в то время как обычные пользователи (без создания Профиля) могут подписываться на Создателей и коллекции публикаций. Таким образом, мы можем объединить данные, которыми создатели могут манипулировать, для комплексного анализа.
+
+Мы определяем CTE `action_data` и используем метод вложенного определения CTE для сбора связанных данных вместе. Среди них, post_data, comment_data и mirror_data - все точно такие же, как и определения в предыдущих связанных запросах. Мы используем union all для объединения вышеуказанных данных вместе, и одновременно распространяем и указываем соответствующий тип действия для создания поля `action_type` для классификации. Затем нам нужно только выполнить сводную статистику в соответствии с полями классификации, чтобы рассчитать количество транзакций и соответствующее количество профилей для каждого типа операции. Пример SQL приведен ниже:
+
+``` sql
+with action_data as (
+    with post_data as (
+        -- get post data from relevant tables
+    ),
+    
+    comment_data as (
+        -- get comment data from relevant tables
+    ),
+    
+    mirror_data as (
+        -- get mirror data from relevant tables
+    )
+ 
+    select 'Post' as action_type, * from post_data
+    union all
+    select 'Mirror' as action_type, * from mirror_data
+    union all
+    select 'Comment' as action_type, * from comment_data
+)
+
+select action_type,
+    count(*) as transaction_count,
+    count(distinct profile_id) as profile_count
+from action_data
+group by 1
+```
+
+Подобным образом, мы можем создать запрос, который обобщает ежедневные показатели различных операций по дате. Образец кода приведен ниже:
+
+```
+with action_data as (
+    -- same as above query
+)
+
+select date_trunc('day', call_block_time) as block_date,
+    action_type,
+    count(*) as transaction_count
+from action_data
+group by 1, 2
+order by 1, 2
+```
+
+Визуализируйте результаты вышеуказанного запроса и добавьте их на панель данных, эффект отображения следующий:
+
+![](img/ch08_image_20.png)
+
+Ссылка на этот запрос на Dune:
+- [https://dune.com/queries/1561822](https://dune.com/queries/1561822)
+- [https://dune.com/queries/1561898](https://dune.com/queries/1561898)
