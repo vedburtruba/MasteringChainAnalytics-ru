@@ -324,3 +324,31 @@ order by 1, 2
 Ссылка на этот запрос на Dune:
 - [https://dune.com/queries/1561822](https://dune.com/queries/1561822)
 - [https://dune.com/queries/1561898](https://dune.com/queries/1561898)
+
+## Комплексный анализ регулярных действий обычных пользователей
+
+Подобно создателям, мы можем объединить операции подписки и сбора, которые обычные пользователи могут выполнять, для анализа. Мы также пишем два запроса для подсчета общей статистики операций и количества операций по дате. `action_data data` в запросе также происходит из запроса подписки и запроса сбора, представленных ранее. Пример SQL следующий:
+
+``` sql
+with action_data as (
+    with follow_data as (
+        -- get follow data from relevant tables
+    ),
+    
+    collect_data as (
+        -- get collect data from relevant tables
+    )
+
+    select 'Follow' as action_type, * from follow_data
+    union all
+    select 'Collect' as action_type, * from collect_data
+)
+```
+
+Помимо разных источников данных, эти два запроса по сути одинаковы с комплексным анализом действий создателей. Визуализируйте результаты запроса и добавьте их на информационную панель данных, эффект отображения следующий:
+
+![](img/ch08_image_21.png)
+
+Ссылка на запрос выше на Dune:
+- [https://dune.com/queries/1562000](https://dune.com/queries/1562000)
+- [https://dune.com/queries/1562178](https://dune.com/queries/1562178)
