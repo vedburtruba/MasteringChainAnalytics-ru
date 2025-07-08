@@ -101,3 +101,20 @@ where symbol = 'WETH'
 group by 1, 2, 3, 4
 order by 1
 ```
+## Запрос среднедневной цены нескольких токенов ERC20
+
+Аналогично, мы можем запрашивать среднюю цену группы токенов ERC20 каждый день в одно и то же время, просто поместите символ запрашиваемого токена в условный оператор `in ()`. SQL-запрос выглядит следующим образом:
+
+```sql
+select date_trunc('day', minute) as block_date,
+    symbol,
+    decimals,
+    contract_address,
+    avg(price) as price
+from prices.usd
+where symbol in ('WETH', 'WBTC', 'USDC')
+    and blockchain = 'ethereum'
+    and minute >= date('2022-10-01')
+group by 1, 2, 3, 4
+order by 2, 1   -- Сортировка по символу в первую очередь
+```
