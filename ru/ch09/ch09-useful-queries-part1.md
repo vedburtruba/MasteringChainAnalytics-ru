@@ -118,3 +118,49 @@ where symbol in ('WETH', 'WBTC', 'USDC')
 group by 1, 2, 3, 4
 order by 2, 1   -- Сортировка по символу в первую очередь
 ```
+
+## Рассчитать цену по записям о свопах DeFi
+
+Таблица данных о ценах `prices.usd` на Dune поддерживается через spellbook, которая не включает информацию о ценах для всех токенов на всех поддерживаемых блокчейнах. Особенно, когда новый токен ERC20 только выпущен и добавлен на DEX (например, XEN), список цен Dune не будет автоматически отображать данные этого токена. В этом случае мы можем читать данные о свопах в проекте DeFi, например, данные о свопах в Uniswap, рассчитывать цену обмена между соответствующим токеном и USDC (или WETH), а затем конвертировать данные о ценах USDC или WETH, чтобы получить цену в долларах США. Пример запроса приведен ниже:
+
+``` sql
+with xen_price_in_usdc as (
+    select date_trunc('hour', evt_block_time) as block_date,
+        'XEN' as symbol,
+        '0x06450dee7fd2fb8e39061434babcfc05599a6fb8' as contract_address, -- XEN
+        18 as decimals,
+        avg(amount1 / amount0) / pow(10, (6-18)) as price   --USDC: 6 decimals, XEN: 18 decimals
+    from (
+        select contract_address,
+            abs(amount0) as amount0,
+            abs(amount1) as amount1,
+            evt_tx_hash,
+            evt_block_time
+        from uniswap_v3_ethereum.Pair_evt_Swap
+        where contract_address = '0x353bb62ed786cdf7624bd4049859182f3c1e9e5d'   -- XEN-USDC 1.00% Pair
+            and evt_block_time > '2022-10-07'
+            and evt_block_time > now() - interval '30 days'
+    ) s
+    group by 1, 2, 3, 4
+),
+
+usdc_price as (
+    select date_trunc('hour', minute) as block_date,
+        avg(price) as price
+    from prices.usd
+    where contract_address = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'   -- USDC
+        and minute > '2022-10-07'
+        and minute > now() - interval '30 days'
+    group by 1
+)
+
+select x.block_date,
+    x.price * u.price as price_usd
+from xen_price_in_usdc x
+inner join usdc_price u on x.block_date = u.block_date
+order by x.block_date
+```
+
+Приведенный выше запрос является практическим применением в панели данных проекта XEN Crypto. Ссылка для справки:
+- панель данных: [XEN Crypto Overview](https://dune.com/sixdegree/xen-crypto-overview)
+- Запрос: [XEN - price trend](https://dune.com/queries/1382200)
