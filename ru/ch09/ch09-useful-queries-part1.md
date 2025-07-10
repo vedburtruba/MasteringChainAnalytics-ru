@@ -164,3 +164,30 @@ order by x.block_date
 Приведенный выше запрос является практическим применением в панели данных проекта XEN Crypto. Ссылка для справки:
 - панель данных: [XEN Crypto Overview](https://dune.com/sixdegree/xen-crypto-overview)
 - Запрос: [XEN - price trend](https://dune.com/queries/1382200)
+## Рассчитать цену из таблицы заклинаний транзакций DeFi
+
+Если соответствующие данные транзакций DeFi уже интегрированы в таблицу `dex.trades`, будет легче использовать эту таблицу для расчета цены. Мы можем разделить `amount_usd` на `token_bought_amount` или `token_sold_amount`, чтобы получить цену соответствующего токена в долларах США. В качестве примера возьмем USDC-WETH 0.30% на Uniswap V3, SQL-запрос для расчета последней цены WETH выглядит следующим образом:
+
+``` sql
+with trade_detail as (
+    select block_time,
+        tx_hash,
+        amount_usd,
+        token_bought_amount,
+        token_bought_symbol,
+        token_sold_amount,
+        token_sold_symbol
+    from dex.trades
+    where project_contract_address = 0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8
+        and block_date >= now() - interval '3' day
+    order by block_time desc
+    limit 1000
+)
+
+select avg(
+    case when token_bought_symbol = 'WETH' then amount_usd / token_bought_amount
+        else amount_usd / token_sold_amount
+    end
+    ) as price
+from trade_detail
+```
