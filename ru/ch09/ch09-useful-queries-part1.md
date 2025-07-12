@@ -195,3 +195,33 @@ from trade_detail
 ## Рассчитать цену нативного токена (ETH)
 
 Взяв Ethereum в качестве примера, его нативный токен ETH не является токеном ERC20, поэтому информации о цене ETH самой по себе нет в таблице `prices.usd`. Однако, токены WETH (Wrapped ETH) эквивалентны ETH, поэтому мы можем напрямую использовать данные о цене WETH.
+## Использование данных о ценах из других блокчейнов
+
+Существует также хитрость, которая может сработать, когда данные о цене токенов блокчейна, который мы хотим проанализировать, не могут быть найдены в `prices.usd`. Например, блокчейн Avalanche-C также предоставляет транзакции токенов, таких как USDC, WETH, WBTC и AAVE, но они имеют разные адреса токенов по сравнению с блокчейном Ethereum. Если `prices.usd` не предоставляет данные о цене блокчейна Avalache-C (что должно быть уже поддерживается), мы можем настроить CTE для сопоставления адресов токенов на разных блокчейнах, а затем выполнить запрос для получения цены.
+
+``` sql
+with token_mapping_to_ethereum(aave_token_address, ethereum_token_address, token_symbol) as (
+    values
+    (0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9, 0xdac17f958d2ee523a2206206994597c13d831ec7, 'USDT'),
+    (0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f, 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599, 'WBTC'),
+    (0xd22a58f79e9481d1a88e00c343885a588b34b68b, 0xdb25f211ab05b1c97d595516f45794528a807ad8, 'EURS'),
+    (0xff970a61a04b1ca14834a43f5de4533ebddb5cc8, 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48, 'USDC'),
+    (0xf97f4df75117a78c1a5a0dbb814af92458539fb4, 0x514910771af9ca656af840dff83e8264ecf986ca, 'LINK'),
+    (0x82af49447d8a07e3bd95bd0d56f35241523fbab1, 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2, 'WETH'),
+    (0xda10009cbd5d07dd0cecc66161fc93d7c9000da1, 0x6b175474e89094c44da98b954eedeac495271d0f, 'DAI'),
+    (0xba5ddd1f9d7f570dc94a51479a000e3bce967196, 0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9, 'AAVE')
+),
+
+latest_token_price as (
+    select contract_address,
+        symbol,
+        decimals,
+        price
+    from latest_token_price_row_num
+    where row_num = 1
+)
+
+select * from latest_token_price
+```
+
+Вот пример запроса: [https://dune.com/queries/1042456](https://dune.com/queries/1042456)
