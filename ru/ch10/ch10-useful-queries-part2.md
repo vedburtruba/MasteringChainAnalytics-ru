@@ -146,3 +146,88 @@ order by amount_area_type
 - Статистическое распределение по логарифмическому разделению: [https://dune.com/queries/1622137](https://dune.com/queries/1622137)
 - Статистическое распределение в соответствии с методом равного разделения: [https://dune.com/queries/1300399](https://dune.com/queries/1300399)
     
+## Запрос количества держателей токена ERC20 за дату
+
+Для смарт-контрактов, которые уже были проанализированы, помимо запроса таблицы `evt_Transfer`, мы можем также напрямую запрашивать соответствующие таблицы Decode. Например, в отношении токена FTT, который мы запрашивали ранее, его контракт уже был декодирован. Перейдите на страницу редактора запросов Dune, нажмите "Decoded Projects", выполните поиск "ftt" и затем выберите "FTT_Token". Вы увидите таблицу типа `event` под названием "Transfer" в списке. Нажмите на символ двойной стрелки справа, чтобы вставить полное имя таблицы в окно редактора запросов, которое является `ftt_ethereum.FTT_Token_evt_Transfer`. Преимущество использования таблиц Decode заключается в том, что запросы считывают меньше данных и работают быстрее.
+
+Предположим, наша цель — отслеживать количество держателей токенов FTT еженедельно, чтобы нам нужно было выяснить, сколько людей владеют остатками токенов FTT в течение каждой недели. Начнем с кода запроса, а затем с объяснением:
+
+``` sql
+with transfer_detail as (
+    select evt_block_time,
+        "to" as address,
+        cast(value as decimal(38, 0)) as value,
+        evt_tx_hash
+    from ftt_ethereum.FTT_Token_evt_Transfer
+    
+    union all
+    
+    select evt_block_time,
+        "from" as address,
+        -1 * cast(value as decimal(38, 0)) as value,
+        evt_tx_hash
+    from ftt_ethereum.FTT_Token_evt_Transfer
+),
+
+holder_balance_weekly as (
+    select date_trunc('week', evt_block_time) as block_date,
+        address,
+        sum(value/1e18) as balance_amount
+    from transfer_detail
+    group by 1, 2
+),
+
+holder_summary_weekly as (
+    select 
+		block_date,
+		address,
+		sum(balance_amount) over (partition by address order by block_date) as total_balance
+	from holder_balance_weekly
+),
+
+min_max_date as (
+	select
+		min(block_date) as start_date,
+		max(block_date) as end_date
+	from holder_balance_weekly
+),
+
+date_series as (
+    select 
+		start_date + (n-1) * interval '7 days' as date
+    from min_max_date,
+         generate_series(1, 
+                         (date_part('day', (select end_date from min_max_date)) - date_part('day', (select start_date from min_max_date))) + 1)
+),
+
+holder_balance_until_date as (
+    select
+		d.date,
+		h.address,
+		h.total_balance
+	from date_series d
+	inner join holder_summary_weekly h on h.block_date <= d.date
+),
+
+holder_count_summary as (
+    select 
+		date,
+		count(distinct address) as holder_count
+    from holder_balance_until_date
+    where total_balance > 0
+    group by date
+)
+
+select 
+	date,
+	holder_count,
+	holder_count - lag(holder_count, 1, 0) as holder_count_change
+from holder_count_summary
+order by date;
+```
+
+Мы визуализируем результаты запроса в два графика и добавляем их на панель данных следующим образом:
+
+[Изображение ch10_image_07.png]
+
+Пример на Dune: [https://dune.com/queries/1625278](https://dune.com/queries/1625278)
