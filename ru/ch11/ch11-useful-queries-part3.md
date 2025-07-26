@@ -72,3 +72,52 @@ with contract_transfer as (
     from nft.trades
     where nft_contract_address = 0xe361f10965542ee57D39043C9c3972B77841F581
         and tx_to != 0x0000000000000000000000000000000
+## Чтение данных из полей массива и структуры
+
+Некоторые смарт-контракты генерируют логи событий, используя параметры массива, и таблица данных, генерируемая Dune после декодирования, также хранится в массивах. Таблицы необработанных транзакций блокчейна Solana широко используют массивы для хранения данных. Некоторые данные хранятся в структурах, или нам нужно к ним обращаться, когда мы хотим извлечь данные (пример смотрите ниже). Давайте рассмотрим, как получить доступ к данным, хранящимся в полях массива и полях структуры.
+
+``` sql
+select tokens, deltas, evt_tx_hash
+from balancer_v2_arbitrum.Vault_evt_PoolBalanceChanged
+where evt_tx_hash = 0x65a4f35d81fd789d93d79f351dc3f8c7ed220ab66cb928d2860329322ffff32c
+```
+
+Первые два поля, возвращенные предыдущим запросом, являются массивами (показаны на следующем изображении):
+
+![](img/ch11_image_10.png)
+
+Мы можем использовать `cross join unnest(tokens) as tbl1(token)` для разделения поля массива `tokens` на несколько строк:
+``` sql
+select evt_tx_hash, deltas, token   -- Возвращает разделенное поле
+from balancer_v2_arbitrum.Vault_evt_PoolBalanceChanged
+cross join unnest(tokens) as tbl1(token)   -- Разделение на несколько строк и именование нового поля token
+where evt_tx_hash = 0x65a4f35d81fd789d93d79f351dc3f8c7ed220ab66cb928d2860329322ffff32c
+```
+
+Мы также можем разделить поле `deltas`. Но поскольку каждый `cross join` добавляет разделенное значение к исходному набору результатов запроса, если мы выполняем операции над обоими полями одновременно, у нас будет неверный набор результатов, похожий на декартово произведение. Следующий скриншот показывает код запроса и полученный вывод:
+
+``` sql
+select evt_tx_hash, token, delta
+from balancer_v2_arbitrum.Vault_evt_PoolBalanceChanged
+cross join unnest(tokens) as tbl1(token)   -- Разделение на несколько строк и именование нового поля token
+cross join unnest(deltas) as tbl2(delta)   -- Разделение на несколько строк и именование нового поля delta
+where evt_tx_hash = 0x65a4f35d81fd789d93d79f351dc3f8c7ed220ab66cb928d2860329322ffff32c
+```
+
+![](img/ch11_image_11.png)
+
+Чтобы избежать дублирования, рекомендуется разделять несколько полей одновременно внутри одной функции `unnest()`, она вернет временную таблицу с несколькими соответствующими новыми полями.
+
+``` sql
+select evt_tx_hash, token, delta
+from balancer_v2_arbitrum.Vault_evt_PoolBalanceChanged
+cross join unnest(tokens, deltas) as tbl(token, delta)   -- Разделение на несколько строк и именование нового поля token snd delta
+where evt_tx_hash = 0x65a4f35d81fd789d93d79f351dc3f8c7ed220ab66cb928d2860329322ffff32c
+```
+
+Результат показан на следующей фигуре: 
+
+![](img/ch11_image_12.png)
+
+Пример ссылки на вышеуказанный запрос: 
+- [https://dune.com/queries/1654079](https://dune.com/queries/1654079)
