@@ -121,3 +121,38 @@ where evt_tx_hash = 0x65a4f35d81fd789d93d79f351dc3f8c7ed220ab66cb928d2860329322f
 
 Пример ссылки на вышеуказанный запрос: 
 - [https://dune.com/queries/1654079](https://dune.com/queries/1654079)
+
+## Чтение данных строки JSON
+
+В некоторых смарт-контрактах объекты, содержащие несколько значений, сериализуются в виде строк JSON в таблице разбора, такие как событие создания профиля Lens, который мы видели ранее. Мы можем использовать `:` для чтения переменных непосредственно из строки JSON. Например:
+
+```sql
+select  json_value(vars, 'lax $.to') as user_address, -- Чтение строки JSON адреса пользователя
+     json_value(vars, 'lax $.handle') as handle_name, -- Чтение строки JSON ников пользователя
+    call_block_time,
+    output_0 as profile_id,
+    call_tx_hash
+from lens_polygon.LensHub_call_createProfile
+where call_success = true   
+limit 100
+```
+
+В качестве альтернативы используйте функцию `json_query()` или `json_extract()` для извлечения соответствующих данных. Функция `json_extract()` поддерживает преобразование типов, когда вам необходимо извлекать значения массива из строки JSON. Вот несколько примеров:
+```sql
+select
+json_query(vars, 'lax $.follower') AS follower, -- одиночное значение
+json_query(vars, 'lax $.profileIds') AS profileIds, -- все еще строка
+from_hex(cast(json_extract(vars,'$.follower') as varchar)) as follower2, -- преобразование в varbinary
+cast(json_extract(vars,'$.profileIds') as array(integer)) as profileIds2, -- преобразование в массив
+vars
+from lens_polygon.LensHub_call_followWithSig
+where cardinality(output_0) > 1
+limit 10
+```
+
+Пример ссылки на вышеуказанный запрос: 
+- [https://dune.com/queries/1562662](https://dune.com/queries/1562662)
+- [https://dune.com/queries/941978](https://dune.com/queries/941978)
+- [https://dune.com/queries/1554454](https://dune.com/queries/1554454)
+
+Dune SQL (Trino) Для получения подробной справки по функциям JSON, ознакомьтесь с: https://trino.io/docs/current/functions/json.html
