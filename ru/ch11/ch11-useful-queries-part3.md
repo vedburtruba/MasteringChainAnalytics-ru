@@ -156,3 +156,13 @@ limit 10
 - [https://dune.com/queries/1554454](https://dune.com/queries/1554454)
 
 Dune SQL (Trino) Для получения подробной справки по функциям JSON, ознакомьтесь с: https://trino.io/docs/current/functions/json.html
+
+## О нас
+
+`Sixdegree` — это профессиональная команда по анализу данных на блокчейне. Наша миссия — предоставлять пользователям точные графики, аналитику и инсайты по данным на блокчейне. Мы стремимся популяризировать анализ данных на блокчейне. Благодаря созданию сообщества и написанию учебных пособий, среди прочих инициатив, мы обучаем аналитиков данных на блокчейне, выпускаем ценный аналитический контент, продвигаем сообщество для построения слоя данных для блокчейна и воспитываем таланты для широкого будущего блокчейн-данных приложений. Добро пожаловать на площадку обмена опытом в сообществе!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Электронная почта: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
