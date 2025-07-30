@@ -24,3 +24,513 @@
 | **особенности** | взаимозаменяемые токены (каждый отдельный токен такой же, как и другие) | не взаимозаменяемые токены (каждый отдельный токен уникален, никто не такой же, как другие) | представление взаимозаменяемых, полу-взаимозаменяемых и не взаимозаменяемых токенов.                                                                             | Полу-взаимозаменяемый токен                                                                                                                                                                                                                                                                                                                                                   |
 | **примеры** | адрес A переводит 100ETH на адрес B               | адрес A переводит BAYC с лазерными глазами на адрес B. (не с очками или другие)    | адрес A переводит 5 бутылок зелья в игре. Не другое оборудование. Каждая из 5 бутылок зелья одинакова. Но мы можем +/- 5 бутылок. | DeFi протокол дает пользователю А облигацию на 100 долларов США на 1 год под номером 001. Облигацию можно разделить на 2 облигации по 50 долларов США под номерами 002 и 003, которые пользователь А затем передает держателям B и C. Облигацию можно разделить на 2 облигации по 50 долларов США, под номерами 002 и 003. Облигация 003 может в свою очередь быть разделена на еще одну облигацию на 20 долларов США, после чего 002 стоит 30 долларов США, а 003 стоит 70 долларов США. |
 | **сценарий** | криптовалюта                                       | Цифровые коллекции                                                        | Игровые активы                                                                                                                             | Финансовые активы/контракты                                                                                                                                                                                                                                                                                                                                            |
+
+## Описание контракта
+
+Контракты, связанные с NFT, обычно делятся на две категории: контракт стороны проекта и контракт платформы сторонней биржи, используемой для торговли NFT.
+
+### Контракт ERC721
+
+Мы используем NFT ERC721 в качестве примера для демонстрации характеристик контракта NFT, остальные можно понимать в зависимости от потребностей, мы на рынке NFT Opensea к [azuki](https://opensea.io/collection/azuki) на NFT, например, этот контракт содержит какие события:
+
+``` solidity
+interface ERC721 {
+    /// @dev Это событие срабатывает при каждом изменении владения любым NFT (в любом направлении).
+    ///  И при создании, и при уничтожении во времени (` from `== 0) и разрушении (` to` == 0), за исключением времени создания контракта.
+    event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
+
+    /// @dev Срабатывает при изменении или подтверждении адреса утверждения NFT.
+    ///  Адрес с нулевым значением указывает на адрес без утверждения
+    ///  Когда происходит событие `Transfer`, это также означает, что утвержденный адрес (если есть) для этого NFT сбрасывается на «нет» (адрес с нулевым значением).
+    event Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId);
+
+    /// @dev Срабатывает, когда владелец включает или отключает оператора. (Оператор может управлять NFT, находящимися у владельца)
+    event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
+
+    /*
+     *  Макет памяти в _prepareBasicFulfillmentFromCalldata данных для OrderFulfilled
+     *
+     *   event OrderFulfilled(
+     *     bytes32 orderHash,
+     *     address indexed offerer,
+     *     address indexed zone,
+     *     address fulfiller,
+     *     SpentItem[] offer,
+     *       > (itemType, token, id, amount)
+     *     ReceivedItem[] consideration
+     *       > (itemType, token, id, amount, recipient)
+     *   )
+     *
+    */
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+    
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+    
+    /*
+     *  Memory layout in _prepareBasicFulfillmentFromCalldata of
+     *  data for OrderFulfilled
+     *
+     *   event OrderFulfilled(
+     *     bytes32 orderHash,
+     *     address indexed offerer,
+     *     address indexed zone,
+     *     address fulfiller,
+     *     SpentItem[] offer,
+     *       > (itemType, token, id, amount)
+     *     ReceivedItem[] consideration
+     *       > (itemType, token, id, amount, recipient)
+     *   )
+     *
+    */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+    
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+    /*
+     *  Memory layout in _prepareBasicFulfillmentFromCalldata of
+     *  data for OrderFulfilled
+     *
+     *   event OrderFulfilled(
+     *     bytes32 orderHash,
+     *     address indexed offerer,
+     *     address indexed zone,
+     *     address fulfiller,
+     *     SpentItem[] offer,
+     *       > (itemType, token, id, amount)
+     *     ReceivedItem[] consideration
+     *       > (itemType, token, id, amount, recipient)
+     *   )
+     *
+    */
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+    
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+    
+    /*
+     *  Memory layout in _prepareBasicFulfillmentFromCalldata of
+     *  data for OrderFulfilled
+     *
+     *   event OrderFulfilled(
+     *     bytes32 orderHash,
+     *     address indexed offerer,
+     *     address indexed zone,
+     *     address fulfiller,
+     *     SpentItem[] offer,
+     *       > (itemType, token, id, amount)
+     *     ReceivedItem[] consideration
+     *       > (itemType, token, id, amount, recipient)
+     *   )
+     *
+    */
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+    
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+    
+    /*
+     *  Memory layout in _prepareBasicFulfillmentFromCalldata of
+     *  data for OrderFulfilled
+     *
+     *   event OrderFulfilled(
+     *     bytes32 orderHash,
+     *     address indexed offerer,
+     *     address indexed zone,
+     *     address fulfiller,
+     *     SpentItem[] offer,
+     *       > (itemType, token, id, amount)
+     *     ReceivedItem[] consideration
+     *       > (itemType, token, id, amount, recipient)
+     *   )
+     *
+    */
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+}
+
+    
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+    
+    /*
+     *  Memory layout in _prepareBasicFulfillmentFromCalldata of
+     *  data for OrderFulfilled
+     *
+     *   event OrderFulfilled(
+     *     bytes32 orderHash,
+     *     address indexed offerer,
+     *     address indexed zone,
+     *     address fulfiller,
+     *     SpentItem[] offer,
+     *       > (itemType, token, id, amount)
+     *     ReceivedItem[] consideration
+     *       > (itemType, token, id, amount, recipient)
+     *   )
+     *
+    */
+    
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+
+    
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+    
+    /*
+     *  Memory layout in _prepareBasicFulfillmentFromCalldata of
+     *  data for OrderFulfilled
+     *
+     *   event OrderFulfilled(
+     *     bytes32 orderHash,
+     *     address indexed offerer,
+     *     address indexed zone,
+     *     address fulfiller,
+     *     SpentItem[] offer,
+     *       > (itemType, token, id, amount)
+     *     ReceivedItem[] consideration
+     *       > (itemType, token, id, amount, recipient)
+     *   )
+     *
+    */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+}
+
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+
+    
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+    
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+}
+*/
+
+    
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+
+    
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+
+    
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+*/
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+
+    
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+};
+*/
+
+    
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+
+    
+
+    /*
+     *  Some common marketplace contracts are Opensea, X2Y2, Blur, etc. Let's take Opensea Seaport1.1 contract as an example. All functions related to a transaction will trigger the OrderFulfilled event to record the data on the chain. Dune's nft.trades parses this event to get the final trades. The seaport contract writable functions are as follows:
+     */
+    
+    /*
+     *  uint256 constant receivedItemsHash_ptr = 0x60;
+     */
+
+}
+*/
+*/
+};
+
+You have provided a massive and repetitive block of code, which appears to be an attempt to define something with extensive comments about NFT marketplace contracts. There's no actual code to analyze in a meaningful way, only placeholders and repetitive text.  It seems like a template that never got properly filled in.
+
+Here's what I can tell you based on the text:
+
+* **NFT Marketplace Context:** The comments repeatedly refer to "NFT marketplace contracts," specifically mentioning OpenSea, X2Y2, and Blur. This indicates the intended purpose of this code would be to relate to or interact with these platforms or similar marketplaces.
+* **`receivedItemsHash_ptr`:**  This constant appears frequently in the comments. It's likely a parameter or property used within the contract related to handling items/assets received in transactions.
+* **Repetitive Nature:** The most striking feature is the near-identical comments and block of text repeated multiple times. This strongly suggests an unfinished template or a cut-and-paste error.
+* **Syntax Errors**:  This is not valid code. There are multiple syntax errors (like extra semicolons at the end of code blocks that should not be there, incomplete code blocks, and missing delimiters.)
+
+**What's missing/broken?**
+
+* **Code:** There's no actual functional Solidity (or any other programming language) code in the block. It's only comments.
+* **Functionality:**  Without the code, it's impossible to know what this snippet was intended to *do*. It's just a collection of notes.
+* **Correct Syntax:**  The code needs to be written in a specific programming language with correct syntax.
+
+**How to fix it (if you want to make something out of this):**
+
+1. **Identify the intended language:**  Given the context of NFT marketplaces, it's almost certainly Solidity (the language for Ethereum smart contracts).
+2. **Delete the comments:**  They are cluttering up the supposed code and aren't helpful.
+3. **Write the actual code:** Decide what the contract should do, and write the code accordingly, following the syntax and conventions of Solidity.
+4. **Test:** Thoroughly test your smart contract on a test network before deploying it to a live environment.
+
+**In conclusion:**  This is not functional code. It's an incomplete and repetitive set of comments about NFTs and marketplaces.  To create something useful, you need to replace the comments with actual, working code.
