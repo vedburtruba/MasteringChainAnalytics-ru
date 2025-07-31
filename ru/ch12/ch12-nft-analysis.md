@@ -534,3 +534,45 @@ Here's what I can tell you based on the text:
 4. **Test:** Thoroughly test your smart contract on a test network before deploying it to a live environment.
 
 **In conclusion:**  This is not functional code. It's an incomplete and repetitive set of comments about NFTs and marketplaces.  To create something useful, you need to replace the comments with actual, working code.
+
+## Описание общих таблиц
+
+- Оригинальная базовая таблица: находится в `Raw`-->`transactions` и `logs` таблицах;
+- Специальная таблица проекта: находится в `Decoded Projects->Search`, введите название специфической таблицы проекта и название торговой платформы;
+- Агрегированная таблица:
+  - Spells-->erc721: записывает все `transfers` erc721
+  - Spells-->nft: содержит информацию о сделках, минтах, переводах, комиссиях и сжиганиях; наиболее важной из них является таблица сделок, которая агрегирует все данные о сделках с основных бирж.
+
+![](img/ch12_dune-nft-related.png)
+
+Важные детали таблицы nft.trades следующие:
+
+| Поле                       | Описание                         |
+| ------------------------ | ----------------------------------- |
+| blockchain               | Большая часть цепочки данных, собранных в этой таблице           |
+| project                  | Название торговой платформы                   |
+| version                  | Версия торговой платформы                   |
+| block_time               | Время блока                             |
+| token_id                 | ID токена NFT                        |
+| collection               | Название коллекции NFT                |
+| amount_usd               | Долларовая стоимость при торговле           |
+| token_standard           | Стандарты токена                  |
+| trade_type               | Тип транзакции, это сделка с одним NFT или сделка с несколькими NFT   |
+| number_of_items          | Количество проданных NFT                 |
+| trade_category           | Тип транзакции (Прямая покупка, аукцион и т.д.) |
+| evt_type                 | Тип события (Торговля, Минт, Сжигание)            |
+| seller                   | Адрес кошелька продавца                       |
+| buyer                    | Адрес кошелька покупателя                  |
+| amount_original          | Исходная сумма транзакций (в исходных единицах токенов) |
+| amount_raw               | Исходная сумма транзакции без преобразования в числовое значение |
+| currency_symbol          | Символ токена транзакции (какой токен используется в качестве платежной единицы)           |
+| currency_contract        | Адрес контракта токена исходной транзакции, <br>используйте WETH на ETH контрактном адресе       |
+| nft_contract_address     | Адрес контракта NFT                     |
+| project_contract_address | Адрес контракта торговой платформы            |
+| aggregator_name          | Название платформы агрегации, если транзакция инициирована с платформы агрегации, например gem          |
+| aggregator_address       | Адрес контракта платформы агрегации          |
+| tx_hash                  | Хеш транзакции                         |
+| block_number             | Номер блока транзакции                     |
+| tx_from                  | Адрес, с которого инициирована транзакция, обычно покупатель                      |
+| tx_to                    | Адрес, на который должна быть получена транзакция, обычно торговая платформа                 |
+| unique_trade_id          | ID транзакции                              |
