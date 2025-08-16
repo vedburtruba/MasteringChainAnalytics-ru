@@ -600,3 +600,11 @@ Here's what I can tell you based on the text:
 *   Держатели с 1 или 2 NFT
 
 В таблице также отображается общее количество держателей.
+
+## Пример комплексной информационной панели NFT
+
+Мы создали информационную панель, где можно ввести адрес контракта NFT и увидеть всевозможную информацию о проекте. Вы можете узнать больше о запросах, используя запрос на информационной панели:
+
+[https://dune.com/sixdegree/nft-collections-metrics-custom-dashboard](https://dune.com/sixdegree/nft-collections-metrics-custom-dashboard)
+
+![](img/ch12_nft-all-in-one.png)
