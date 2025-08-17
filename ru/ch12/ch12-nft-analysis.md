@@ -608,3 +608,10 @@ Here's what I can tell you based on the text:
 [https://dune.com/sixdegree/nft-collections-metrics-custom-dashboard](https://dune.com/sixdegree/nft-collections-metrics-custom-dashboard)
 
 ![](img/ch12_nft-all-in-one.png)
+
+## Ссылки
+
+- https://mirror.xyz/0x07599B7E947A4F6240F826F41768F76149F490D5/CHcwsp_d0AINEalFq_0FcqkLeEyeeGpYDDtw82TyMes
+- https://github.com/cryptochou/seaport-analysis
+- https://dune.com/sixdegree/soulda-nft-soulda16club
+- https://dune.com/sixdegree/digidaigaku-nft-by-limit-break
