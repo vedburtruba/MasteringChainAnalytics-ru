@@ -615,3 +615,12 @@ Here's what I can tell you based on the text:
 - https://github.com/cryptochou/seaport-analysis
 - https://dune.com/sixdegree/soulda-nft-soulda16club
 - https://dune.com/sixdegree/digidaigaku-nft-by-limit-break
+## О нас
+
+`Sixdegree` — профессиональная команда по анализу данных в блокчейне. Наша миссия — предоставлять пользователям точные графики, анализ и инсайты на основе данных в блокчейне. Мы стремимся популяризировать анализ данных в блокчейне. Благодаря созданию сообщества и написанию учебных пособий, среди прочих инициатив, мы обучаем аналитиков данных в блокчейне, предоставляем ценный аналитический контент, продвигаем сообщество для создания слоя данных для блокчейна и воспитываем таланты для широкого будущего приложений данных блокчейна. Добро пожаловать на площадку обмена опытом!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Электронная почта: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
