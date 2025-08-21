@@ -85,3 +85,16 @@ To help me tailor my advice further, can you tell me:
 *   What's the main purpose of this analysis? (e.g., investment decision, research project, protocol monitoring?)
 *   What are you already using to collect and visualize data?
 *   Are you focusing on any particular aspects (e.g., risk management, investment opportunities)?
+## Панель управления кредитованием
+
+1. Комплексная панель управления для AAVE V3 на Arbitrum. 
+
+https://dune.com/sixdegree/aave-on-arbitrum-overview
+
+![](img/ch13_dashboard.png)
+
+2. И панель управления, сравнивающая три классических протокола кредитования на Ethereum: Maker, AAVE и Compound. Однако, эта панель управления устарела, использует движок Dune V1. Dune вскоре выведет V1 из эксплуатации и будет использовать только V2 в будущем, поэтому вы можете ссылаться на нее при изучении.
+
+https://dune.com/datanut/Compound-Maker-and-Aave-Deposits-Loans-LTV
+
+![](img/ch13_dashboard2.png)
