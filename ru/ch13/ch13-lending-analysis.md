@@ -106,3 +106,13 @@ https://dune.com/datanut/Compound-Maker-and-Aave-Deposits-Loans-LTV
 4. https://www.blocktempo.com/why-do-defi-lending-protocols-generate-bad-debts/
 5. https://www.panewslab.com/zh/articledetails/k1ep9df5.html
 6. https://new.qq.com/rain/a/20201121A096UF00
+
+## О нас
+
+`Sixdegree` – это профессиональная команда по анализу данных в блокчейне. Наша миссия – предоставлять пользователям точные графики, аналитику и инсайты на основе данных в блокчейне. Мы стремимся популяризировать анализ данных в блокчейне. Благодаря созданию сообщества, написанию обучающих материалов и другим инициативам мы обучаем аналитиков данных в блокчейне, создаем ценный аналитический контент, продвигаем сообщество для создания слоя данных для блокчейна и воспитываем таланты для широкого будущего приложений блокчейн-данных. Добро пожаловать на площадку обмена опытом в сообществе!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Электронная почта: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
