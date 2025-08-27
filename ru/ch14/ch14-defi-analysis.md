@@ -133,3 +133,15 @@ Okay, this is a comprehensive breakdown of the provided Dune Analytics queries a
 
 
 **In essence, these Dune Analytics queries provide a powerful toolkit for understanding the performance and health of the Uniswap protocol, focusing on both trading activity and user engagement.**  The insights gained from these queries can be used to inform product decisions, marketing strategies, and risk management.
+## Анализ конкретной пары
+
+Возможно, нам также потребуется более углубленный анализ конкретных пулов ликвидности, включая их данные о транзакциях, данные о ликвидности и т.д. Из-за ограничений по месту мы не можем предоставить здесь подробное введение. Однако мы предлагаем несколько примеров запросов и панелей для справки:
+
+Пример запроса:
+* [uniswap-v3-poo](https://dune.com/queries/1174517)<a id="jump_8"></a>
+* [Обзор торгового пула XEN-Uniswap](https://dune.com/queries/1382063)<a id="jump_8"></a>
+* [Пользователи lp optimism uniswap](https://dune.com/queries/1584678)<a id="jump_8"></a>
+
+Пример панели:
+* [Структура и динамика пула Uniswap V3](https://dune.com/springzhang/uniswap-v3-pool-structure-and-dynamics)<a id="jump_8"></a>
+* [Производительность программы майнинга ликвидности Uniswap V3 на Optimism](https://dune.com/springzhang/uniswap-optimism-liquidity-mining-program-performance)<a id="jump_8"></a>
