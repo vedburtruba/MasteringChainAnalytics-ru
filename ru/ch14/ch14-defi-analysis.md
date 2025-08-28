@@ -145,3 +145,13 @@ Okay, this is a comprehensive breakdown of the provided Dune Analytics queries a
 Пример панели:
 * [Структура и динамика пула Uniswap V3](https://dune.com/springzhang/uniswap-v3-pool-structure-and-dynamics)<a id="jump_8"></a>
 * [Производительность программы майнинга ликвидности Uniswap V3 на Optimism](https://dune.com/springzhang/uniswap-optimism-liquidity-mining-program-performance)<a id="jump_8"></a>
+
+## О нас
+
+`Sixdegree` – это профессиональная команда по анализу данных на блокчейне. Наша миссия – предоставлять пользователям точные графики, анализ и инсайты данных на блокчейне. Мы стремимся популяризировать анализ данных на блокчейне. Благодаря созданию сообщества и написанию учебных пособий, среди других инициатив, мы обучаем аналитиков данных на блокчейне, выпускаем ценный аналитический контент, продвигаем сообщество для построения слоя данных блокчейна и воспитываем таланты для широкого будущего приложений данных блокчейна. Добро пожаловать на площадку обмена опытом!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Электронная почта: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
