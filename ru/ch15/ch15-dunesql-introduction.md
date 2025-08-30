@@ -15,3 +15,12 @@ Dune официально запустила свой собственный р�
 Документация Dune предоставляет подробную таблицу сравнения синтаксиса. Вы можете обратиться к [Сравнению синтаксиса](https://dune.com/docs/query/syntax-differences#syntax-comparison)<a id="jump_8"></a> для получения дополнительной информации. Ниже приведено частичное сравнение различий:
 
 ![](img/ch15_image_01.png)
+
+Okay, let's analyze the provided text and extract the relevant information on how to adapt your query to use `double` or `decimal` data types, specifically for converting hexadecimal representations of values into usable numeric values within Dune SQL.
+
+**Key Takeaways Regarding Data Type Conversion and Numeric Values in Dune SQL**
+
+1. **`bytearray_to_uint256()` Function:** This is the primary function to use when you need to convert a hexadecimal string (starting with "0x") representing a large unsigned integer into a numeric value suitable for calculations or comparisons.
+
+   ```sql
+   select bytearray_to_uint256('0x0000000000000000000000000000000
