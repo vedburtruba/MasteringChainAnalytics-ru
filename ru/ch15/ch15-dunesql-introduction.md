@@ -24,3 +24,13 @@ Okay, let's analyze the provided text and extract the relevant information on ho
 
    ```sql
    select bytearray_to_uint256('0x0000000000000000000000000000000
+## Миграция запросов из Spark SQL в Dune SQL - Пример
+
+Это простой процесс для миграции запросов, написанных в существующем движке Spark SQL, в Dune SQL. Вы можете напрямую получить доступ к интерфейсу редактирования запроса и переключиться на "1. v2 Dune SQL" из выпадающего меню слева набора данных. Затем внесите необходимые изменения в содержимое запроса, как описано в предыдущих разделах этой статьи. Вот пример:
+
+Версия Spark SQL: [https://dune.com/queries/1773896](https://dune.com/queries/1773896)<a id="jump_8"></a>
+Версия Dune SQL: [https://dune.com/queries/1000162](https://dune.com/queries/1000162)<a id="jump_8"></a>
+
+Вот сравнение изменений во время миграции:
+
+![](img/ch15_image_02.png)
