@@ -50,3 +50,7 @@ where user_status = 'Retained'
 select * from query_1752041
 where user_status = 'Churned'
 ```
+## Ссылки для справки
+
+1. [Различия в синтаксисе и операторах](https://dune.com/docs/query/syntax-differences/#syntax-and-operator-differences)<a id="jump_8"></a>
+2. [Функции и операторы Trino](https://trino.io/docs/current/functions.html)<a id="jump_8"></a>
