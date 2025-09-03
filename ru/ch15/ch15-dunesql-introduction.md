@@ -54,3 +54,13 @@ where user_status = 'Churned'
 
 1. [Различия в синтаксисе и операторах](https://dune.com/docs/query/syntax-differences/#syntax-and-operator-differences)<a id="jump_8"></a>
 2. [Функции и операторы Trino](https://trino.io/docs/current/functions.html)<a id="jump_8"></a>
+
+## О нас
+
+`Sixdegree` – это профессиональная команда по анализу данных на блокчейне. Наша миссия – предоставлять пользователям точные графики, аналитику и инсайты на основе данных на блокчейне. Мы стремимся популяризировать анализ данных на блокчейне. Благодаря созданию сообщества, написанию учебных пособий и другим инициативам мы обучаем аналитиков данных на блокчейне, предоставляем ценный аналитический контент, продвигаем сообщество для создания слоя данных для блокчейна и воспитываем таланты для широкого будущего приложений данных для блокчейна. Добро пожаловать на площадку обмена опытом!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Электронная почта: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
