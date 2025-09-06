@@ -75,3 +75,80 @@ order by block_date
 Ссылки на запросы:
 * [https://dune.com/queries/1835421](https://dune.com/queries/1835421)<a id="jump_8"></a>
 * [ttps://dune.com/queries/1835445](ttps://dune.com/queries/1835445)<a id="jump_8"></a>
+
+## Анализ транзакций и пользователей
+### Общий объем транзакций и количество пользователей
+
+Нам нужно рассчитать общее количество транзакций и общее количество уникальных адресов пользователей. CTE может быть определен для объединения адресов отправителей `from` и адресов получателей `to` с помощью UNION ALL, а затем подсчитать различные адреса. Важно отметить, что в этом анализе мы не исключаем адреса контрактов. Если вы хотите исключить адреса контрактов, вы можете добавить подзапрос для исключения этих адресов, найденных в таблице `polygon.creation_traces`. Учитывая большой объем данных, мы представим значения в миллионах (M). Добавьте визуализацию диаграммы Counter для каждой метрики и включите их в панель управления.
+
+```sql
+with transactions_detail as (
+    select block_time,
+        hash,
+        "from" as address
+    from polygon.transactions
+
+    union all
+
+    select block_time,
+        hash,
+        "to" as address
+    from polygon.transactions
+)
+
+select count(distinct hash) / 1e6 as transactions_count,
+    count(distinct address) / 1e6 as users_count
+from transactions_detail
+```
+
+Ссылка на запрос:
+* [https://dune.com/queries/1836022](https://dune.com/queries/1836022)<a id="jump_8"></a>
+
+### Анализ ежедневных (ежемесячных) транзакций и активных пользователей
+
+Аналогично, группируя данные по дате, мы можем генерировать отчеты об общем объеме ежедневных транзакций и количестве активных пользователей. Обобщая данные на ежемесячной основе, мы можем получить ежемесячные сведения. Ниже приведен SQL-запрос для ежедневной агрегации:
+
+```sql
+with transactions_detail as (
+    select block_time,
+        hash,
+        "from" as address
+    from polygon.transactions
+
+    union all
+
+    select block_time,
+        hash,
+        "to" as address
+    from polygon.transactions
+)
+
+select date_trunc('day', block_time) as block_date,
+    count(distinct hash) as transactions_count,
+    count(distinct address) as users_count
+from transactions_detail
+group by 1
+order by 1
+```
+
+Добавьте гистограмму для как для ежедневных, так и для ежемесячных данных о транзакциях, отображающую количество транзакций и количество активных пользователей. Вы можете использовать вторичную ось Y для количества активных пользователей и выбрать либо диаграмму Линии, либо диаграмму Площади. Полученная визуализация на панели управления будет следующей:
+
+![](img/ch16_image_04.png)
+
+Ссылка на запрос:
+* [https://dune.com/queries/1836744](https://dune.com/queries/1836744)<a id="jump_8"></a>
+* [ttps://dune.com/queries/1836854](https://dune.com/queries/1836854)<a id="jump_8"></a>
+
+### Анализ статистики пользователей
+Для этих двух запросов мы можем добавить следующие визуализации:
+
+1. Гистограмма: отображает ежедневное (или ежемесячное) количество активных и новых пользователей. Поскольку доля новых пользователей относительно невелика, установите ее для использования вторичной оси Y.
+2. Диаграмма Площади: сравнивает долю новых и существующих пользователей.
+
+Добавление этих визуализаций на панель управления приведет к следующему отображению:
+
+![](img/ch16_image_04.png)
+
+Ссылка на запрос:
+* [https://dune.com/queries/1836744](https://dune.com/queries/1836744)<a id="jump_8"></a>
+* [ttps://dune.com/queries/1836854](https://dune.com/queries/1836854)<a id="jump_8"></a>
