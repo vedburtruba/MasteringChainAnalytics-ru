@@ -152,3 +152,91 @@ order by 1
 Ссылка на запрос:
 * [https://dune.com/queries/1836744](https://dune.com/queries/1836744)<a id="jump_8"></a>
 * [ttps://dune.com/queries/1836854](https://dune.com/queries/1836854)<a id="jump_8"></a>
+## Анализ нативного токена
+### Тенденция цены MATIC
+
+Заклинания Dune `prices.usd` предоставляют цену токенов сети Polygon, включая нативный токен MATIC. Поэтому мы можем напрямую рассчитывать среднюю цену на ежедневной основе.
+
+``` sql
+select date_trunc('day', minute) as block_date,
+    avg(price) as price
+from prices.usd
+where blockchain = 'polygon'
+    and symbol = 'MATIC'
+group by 1
+order by 1
+```
+
+Поскольку результаты запроса отсортированы в возрастающем порядке по дате, последняя запись представляет собой среднюю цену на наиболее свежую дату, которую можно считать "текущей ценой". Мы можем сгенерировать график Counter для этого, установив значение "Номер строки" на "-1", чтобы получить значение из последней строки. Кроме того, мы можем добавить линию для отображения ежедневной средней цены токена MATIC. После добавления этих графиков на панель управления, отображение будет выглядеть следующим образом:
+
+![](img/ch16_image_05.png)
+
+Ссылка на запрос:
+* [https://dune.com/queries/1836933](https://dune.com/queries/1836933)<a id="jump_8"></a>
+
+### Адреса с самыми большими ходингами токена MATIC
+
+Для нас представляют интерес адреса с самыми большими ходингами токена MATIC, поскольку они часто имеют потенциал влиять на изменения цены токена. Следующий запрос извлекает 1000 лучших адресов. `MATIC` является нативным токеном сети Polygon, и сведения о его переводах хранятся в таблице `polygon.traces`. Обратите внимание, что в этом запросе мы не различаем между контрактными и неконтрактными адресами. Из-за низких комиссий за транзакции газа в сети Polygon мы опустили расчет потребления газа по соображениям производительности.
+
+``` sql
+with polygon_transfer_raw as (
+    select "from" as address, (-1) * cast(value as decimal) as amount
+    from polygon.traces
+    where call_type = 'call'
+        and success = true
+        and value > uint256 '0'
+    
+    union all
+    
+    select "to" as address, cast(value as decimal) as amount
+    from polygon.traces
+    where call_type = 'call'
+        and success = true
+        and value > uint256 '0'
+)
+
+select address,
+    sum(amount) / 1e18 as amount
+from polygon_transfer_raw
+group by 1
+order by 2 desc
+limit 1000
+```
+
+Соображения по поводу вышеуказанного запроса: значение в `polygon.traces` имеет тип `uint256`, который является пользовательским типом в Dune SQL. Если напрямую сравнивать его с числовым значением 0, произойдет ошибка несовпадения типов, которая помешает сравнению. Поэтому мы используем синтаксис, такой как `uint256 '0'`, чтобы преобразовать значение 0 в один и тот же тип для сравнения. В качестве альтернативы, вы можете использовать функции преобразования типов, такие как `cast(0 as uint256)`. Вы также можете преобразовать `value` в double, decimal, bigint или другие типы перед сравнением, но в таких случаях следует учитывать потенциальные проблемы переполнения данных.
+
+Мы можем далее проанализировать распределение ходингов токена MATIC среди 1000 лучших адресов на основе вышеуказанного запроса. Мы можем создать ответвление от существующего запроса и изменить его.
+
+``` sql
+with polygon_transfer_raw as (
+    select "from" as address, (-1) * cast(value as decimal) as amount
+    from polygon.traces
+    where call_type = 'call'
+        and success = true
+        and value > uint256 '0'
+    
+    union all
+    
+    select "to" as address, cast(value as decimal) as amount
+    from polygon.traces
+    where call_type = 'call'
+        and success = true
+        and value > uint256 '0'
+)
+
+select address,
+    sum(amount) / 1e18 as amount
+from polygon_transfer_raw
+group by 1
+order by 2 desc
+limit 1000
+```
+
+Сгенерируйте график столбчатой диаграммы и круговую диаграмму для вышеуказанных двух запросов соответственно. Добавьте их на панель управления, и отображение выглядит следующим образом:
+
+![](img/ch16_image_06.png)
+
+Ссылки на запросы:
+* [https://dune.com/queries/1837749](https://dune.com/queries/1837749)<a id="jump_8"></a>
+* [ttps://dune.com/queries/1837150](ttps://dune.com/queries/1837150)<a id="jump_8"></a>
+* [ttps://dune.com/queries/1837781](ttps://dune.com/queries/1837781)<a id="jump_8"></a>
