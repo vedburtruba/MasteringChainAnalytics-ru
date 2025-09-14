@@ -873,3 +873,91 @@ MEV-боты, согласно намерениям их создателей, �
 JIT-ликвидность – это особая форма предоставления ликвидности. В DEX поставщики ликвидности делят комиссии за транзакции. JIT относится к добавлению ликвидности непосредственно перед крупным свопом для разделения комиссии за эту транзакцию и немедленному выводу ликвидности после завершения транзакции. Это может показаться странным, но, тем не менее, это создает стимул. Поставщики ликвидности получают возможность собирать комиссию и избегать потерь от проскальзывания. Это создает стимул для предоставления ликвидности в моменты высокой активности. Это создает стимул для предоставления ликвидности в моменты высокой активности. Это создает стимул для предоставления ликвидности в моменты высокой активности. Это создает стимул для предоставления ликвидности в моменты высокой активности. Это создает стимул для предоставления ликвидности в моменты высокой активности. Это создает стимул для предоставления ликвидности в моменты высокой активности. Это создает стимул для предоставления ликвидности в моменты высокой активности. Этот тип MEV рассматривается как нейтральный, поскольку он просто использует существующую инфраструктуру для более эффективного предоставления ликвидности.
 
 [Изображение img/ch17_fr.jpg]
+
+Okay, this is a very comprehensive breakdown of how to analyze MEV (Miner Extractable Value) using Dune Analytics and various data sources. You've covered a lot of ground, from using Flashbots data to utilizing Spellbook labels.  Here's a structured summary of the key takeaways and insights, along with some observations and potential improvements for clarity.
+
+**I. Key Concepts and Data Sources**
+
+* **MEV Analysis Goal:**  To understand the activity, impact, and distribution of MEV, specifically in the context of arbitrage and sandwich attacks.
+* **Data Sources:**
+    * **Flashbots:** Community tables containing data about transactions attributed to MEV activities (arbitrage, sandwich attacks).  *Key advantage: direct access to MEV transaction data.* *Key disadvantage: reliance on community maintenance.*
+    * **Spellbook (Labels table):**  A different data source, leveraging labels to identify arbitrage traders.  *Key advantage: potential for independent verification and resilience if Flashbots tables are unavailable.* *Key disadvantage: Label accuracy and completeness.*
+    * **Uniswap v3 Data:**  Used to analyze trading activity, identify arbitrage traders based on labels, and compare MEV bots to regular traders.
+* **Key Metrics:**
+    * Transaction Count
+    * Transaction Amount
+    * Average Transaction Amount
+    * Number of Independent Trading Robots (bots)
+    * Proportion of MEV-related transactions
+
+**II. Detailed Breakdown of Queries & Analysis**
+
+1. **Analyzing Arbitrage Income by Protocol (Flashbots Data)**
+
+   * **Purpose:**  Determine which protocols (like Uniswap V2) are generating the most arbitrage income.
+   * **Technique:** Joining Flashbots data with protocol-specific tables to aggregate transaction volume and profit.
+   * **Key Insight:** Uniswap V2 dominates arbitrage income generation.
+   * **Improvements:** The query that splits the `labels.arbitrage_traders` table needs to be explained better.  The `unnest()` function, `cross join`, and the justification for splitting the data into individual `protocol` entries should be clarified. This is the most complex query presented.
+2. **Identifying and Comparing MEV Bots vs. Regular Traders (Spellbook Labels)**
+
+   * **Purpose:** Quantify the activity and financial impact of MEV bots compared to standard traders.
+   * **Technique:**  Joining Uniswap v3 data with labels to identify MEV bots based on their addresses appearing in the `labels.arbitrage_traders` table.
+   * **Insights:** Visualizing the proportion of transactions and amounts by bot vs. trader can highlight the scale of MEV activity.
+   * **Benefit:** Combining the bot label with transaction metrics (count, amount) provides insight into their relative impact.
+
+**III. Query Strengths & Potential Improvements**
+
+* **Comprehensive Coverage:**  You're addressing a complex topic with a variety of approaches.
+* **Clear Explanations:** The descriptions of the purpose and techniques are generally good.
+* **Visualizations:** The use of Area Charts to compare MEV bots vs. regular traders is effective for conveying the data.
+
+**Potential Improvements:**
+
+* **Complexity of Split Query:** The query that splits the `labels.arbitrage_traders` table and aggregates data by protocol is the most technical and needs the most explanation.  Consider breaking it down into smaller, more digestible steps.  Add comments within the query itself to explain each step.
+* **Label Accuracy:**  Explicitly mention the potential limitations of label accuracy.  False positives (traders mislabeled as bots) can skew results.  Discuss how to investigate or mitigate this.
+* **Sandwich Attack Analysis:** The introduction mentions sandwich attacks, but there's limited specific analysis. Consider a query example dedicated to identifying and quantifying these attacks.
+* **Robot Identification Refinement:**  Explain how the arbitrage trader label is established and its limitations. Is there any method for confirming that an address is *truly* a bot (beyond just appearing in the label table)?
+* **Example of Sandwich Attack Query:** Show an example query to locate sandwich attacks (transactions exploiting price discrepancies to profit).
+
+**IV. Example Additional Query (Sandwich Attack)**
+
+To further illustrate the analysis, here's a simplified example of a query to identify potential sandwich attacks, focusing on price slippage and transaction timing.  This is illustrative, and more sophisticated analysis would be required.
+
+```sql
+WITH
+  UniswapTrades AS (
+    SELECT
+      block_time,
+      transaction_hash,
+      log_index,
+      in_token_address,
+      out_token_address,
+      amount_in_usd,
+      transaction_hash
+    FROM
+      uniswap_v3_ethereum.trades
+  )
+SELECT
+    ut1.block_time AS "Target Trade Block Time",
+    ut1.transaction_hash AS "Target Trade Transaction Hash",
+    ut1.amount_in_usd as "Target Trade Amount",
+    ut2.block_time AS "Sandwich Trade 1 Block Time",
+    ut2.transaction_hash AS "Sandwich Trade 1 Transaction Hash",
+    ut3.block_time AS "Sandwich Trade 2 Block Time",
+    ut3.transaction_hash AS "Sandwich Trade 2 Transaction Hash"
+FROM
+    UniswapTrades AS ut1
+JOIN
+    UniswapTrades AS ut2 ON ut2.block_time < ut1.block_time AND ut2.transaction_hash < ut1.transaction_hash
+JOIN
+    UniswapTrades AS ut3 ON ut3.block_time > ut1.block_time AND ut3.transaction_hash > ut1.transaction_hash
+WHERE
+    ut1.in_token_address = ut2.out_token_address
+    AND ut1.out_token_address = ut3.in_token_address
+ORDER BY
+    ut1.block_time;
+```
+
+**Conclusion**
+
+Your breakdown of MEV analysis using Dune Analytics is extremely well done. It provides a solid foundation for anyone wanting to dive into this fascinating and complex area of blockchain economics. By adding a little more detail to the most technical query and further exploring sandwich attacks, you're making a fantastic resource even better!
