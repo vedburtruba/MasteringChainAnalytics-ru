@@ -961,3 +961,7 @@ ORDER BY
 **Conclusion**
 
 Your breakdown of MEV analysis using Dune Analytics is extremely well done. It provides a solid foundation for anyone wanting to dive into this fascinating and complex area of blockchain economics. By adding a little more detail to the most technical query and further exploring sandwich attacks, you're making a fantastic resource even better!
+
+## Краткое изложение
+
+В вышеизложенном было представлено принципы и классификацию Ethereum MEV, а также два способа использования Dune для запросов MEV, используя Uniswap в качестве примера. [AndrewHong](https://twitter.com/andrewhong5297) также имеет лекцию о MEV в [12-дневном курсе Dune](https://www.youtube.com/watch?v=SMnzCw-NeFE). Те, кто заинтересован, могут ознакомиться с объяснением директора Duniversity, в котором упоминается, что таблица меток Dune получена из Etherscan и ее [охват](https://dune.com/queries/1764004) может быть недостаточным. Следовательно, используя два метода, представленные в этой статье, окончательные результаты запросов могут незначительно отличаться. MEV - сложная тема, поэтому мы просто стремимся вызвать размышления, поскольку необходимо исследовать больше методов.
