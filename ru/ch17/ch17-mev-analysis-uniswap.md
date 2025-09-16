@@ -965,3 +965,13 @@ Your breakdown of MEV analysis using Dune Analytics is extremely well done. It p
 ## Краткое изложение
 
 В вышеизложенном было представлено принципы и классификацию Ethereum MEV, а также два способа использования Dune для запросов MEV, используя Uniswap в качестве примера. [AndrewHong](https://twitter.com/andrewhong5297) также имеет лекцию о MEV в [12-дневном курсе Dune](https://www.youtube.com/watch?v=SMnzCw-NeFE). Те, кто заинтересован, могут ознакомиться с объяснением директора Duniversity, в котором упоминается, что таблица меток Dune получена из Etherscan и ее [охват](https://dune.com/queries/1764004) может быть недостаточным. Следовательно, используя два метода, представленные в этой статье, окончательные результаты запросов могут незначительно отличаться. MEV - сложная тема, поэтому мы просто стремимся вызвать размышления, поскольку необходимо исследовать больше методов.
+## Ссылки
+1. [Понимание полной картины MEV](https://huobi-ventures.medium.com/understanding-the-full-picture-of-mev-4151160b7583)
+2. [Foresight Ventures: Описать, Классифицировать, Доминировать MEV](https://foresightnews.pro/article/detail/10011)
+3. [Flashboy 2.0](https://arxiv.org/pdf/1904.05234.pdf)
+4. [MEV после слияния: Моделирование доходности валидаторов](https://pintail.xyz/posts/post-merge-mev/)
+5. [мев-сэндвич-атаки-и-jit](https://dune.com/amdonatusprince/mev-sandwich-attacks-and-jit)
+6. [uniswap-v3-mev-activity](https://dune.com/alexth/uniswap-v3-mev-activity)
+7. [Just-in-time Liquidity on the Uniswap Protocol](https://uniswap.org/blog/jit-liquidity)
+8. [MEV-Для кого вы работаете](https://github.com/33357/smartcontract-apps/blob/main/Robot/MEV_Who_are_you_working_for.md)
+9. [mev-data-analytics-tutorial](https://dune.com/sixdegree/mev-data-analytics-tutorial)
