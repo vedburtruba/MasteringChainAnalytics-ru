@@ -975,3 +975,13 @@ Your breakdown of MEV analysis using Dune Analytics is extremely well done. It p
 7. [Just-in-time Liquidity on the Uniswap Protocol](https://uniswap.org/blog/jit-liquidity)
 8. [MEV-Для кого вы работаете](https://github.com/33357/smartcontract-apps/blob/main/Robot/MEV_Who_are_you_working_for.md)
 9. [mev-data-analytics-tutorial](https://dune.com/sixdegree/mev-data-analytics-tutorial)
+
+## О нас
+
+`Sixdegree` – это профессиональная команда по анализу данных на блокчейне. Наша миссия – предоставлять пользователям точные графики, аналитику и инсайты на основе данных на блокчейне. Мы стремимся популяризировать анализ данных на блокчейне. Благодаря созданию сообщества и написанию учебных пособий, среди прочих инициатив, мы обучаем аналитиков данных на блокчейне, выпускаем ценный аналитический контент, продвигаем сообщество для построения слоя данных для блокчейна и развиваем таланты для широкого будущего приложений данных блокчейна. Добро пожаловать на площадку обмена опытом!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Электронная почта: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
