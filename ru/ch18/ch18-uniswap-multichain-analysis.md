@@ -50,3 +50,41 @@ group by 1
 
 Ссылка на запрос:
 * [https://dune.com/queries/1859214](https://dune.com/queries/1859214)<a id="jump_8"></a>
+
+## Сравнительный анализ ежедневных транзакций
+
+Аналогично, используя таблицу `uniswap.trades magical`, мы можем написать SQL-запрос для расчета ежедневных данных о транзакциях. SQL-запрос выглядит следующим образом:
+
+``` sql
+with transaction_summary as (
+    select date_trunc('day', block_time) as block_date,
+        blockchain,
+        sum(amount_usd) as trade_amount,
+        count(*) as transaction_count,
+        count(distinct taker) as user_count
+    from uniswap.trades
+    where block_time >= date('2022-01-01')
+        and block_time < date('2023-01-01')
+    group by 1, 2
+)
+
+select block_date,
+    blockchain,
+    trade_amount,
+    transaction_count,
+    user_count,
+    sum(trade_amount) over (partition by blockchain order by block_date) as accumulate_trade_amount,
+    sum(transaction_count) over (partition by blockchain order by block_date) as accumulate_transaction_count,
+    sum(user_count) over (partition by blockchain order by block_date) as accumulate_user_count
+from transaction_summary
+order by 1, 2
+```
+
+Здесь мы суммируем все данные о транзакциях за 2022 год на основе даты и блокчейнов. Мы также выводим кумулятивные данные на основе даты. Важно отметить, что кумулятивный подсчет пользователей в этой агрегации не является точным представлением "кумулятивного уникального числа пользователей", поскольку один и тот же пользователь может совершать транзакции в разные даты. Мы объясним, как рассчитать уникальное число пользователей, в последующих запросах.
+
+Поскольку наша цель состоит в том, чтобы анализировать производительность данных на разных цепочках, мы можем сосредоточиться как на конкретных значениях, так и на их пропорциях. Пропорциональный анализ позволяет визуально наблюдать за тенденциями различных цепочек с течением времени. При этом мы генерируем следующие графики: Линейный график для ежедневного объема транзакций, Столбчатая диаграмма для количества ежедневных транзакций/ежедневного уникального числа пользователей, График площади для кумулятивного объема транзакций, а также количества транзакций/уникального числа пользователей и еще один график площади для отображения процентного вклада каждого ежедневного объема транзакций. Получившиеся графики при добавлении на панель управления будут выглядеть следующим образом:
+
+![](img/ch18_image_02.png)
+
+Ссылка на запрос:
+* [https://dune.com/queries/1928680](https://dune.com/queries/1928680)<a id="jump_8"></a>
