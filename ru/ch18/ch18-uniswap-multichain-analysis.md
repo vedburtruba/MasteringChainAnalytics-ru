@@ -88,3 +88,68 @@ order by 1, 2
 
 Ссылка на запрос:
 * [https://dune.com/queries/1928680](https://dune.com/queries/1928680)<a id="jump_8"></a>
+
+## Ежедневный анализ новых пользователей
+
+Чтобы проанализировать ежедневных новых пользователей и сделать сравнения, нам сначала нужно рассчитать дату первой транзакции для каждого адреса пользователя. Затем мы можем рассчитать количество новых пользователей для каждого дня на основе их дат первой транзакции. В следующем запросе мы используем CTE под названием `user_initial_trade` для расчета даты первой транзакции для каждого адреса пользователя (`taker`) без каких-либо условий фильтрации по дате. Затем, в CTE `new_users_summary`, мы рассчитываем количество новых пользователей для каждого дня в 2022 году. Дополнительно, мы суммируем ежедневных активных пользователей в CTE `active_users_summary`. В окончательном выводе мы вычитаем количество новых пользователей из количества ежедневных активных пользователей, чтобы получить количество удерживаемых пользователей в день. Это позволяет нам создавать визуализации, сравнивающие пропорции новых и удерживаемых пользователей.
+
+``` sql
+with user_initial_trade as (
+    select blockchain,
+        taker,
+        min(block_time) as block_time
+    from uniswap.trades
+    group by 1, 2
+),
+
+new_users_summary as (
+    select date_trunc('day', block_time) as block_date,
+        blockchain,
+        count(*) as new_user_count
+    from user_initial_trade
+    where block_time >= date('2022-01-01')
+        and block_time < date('2023-01-01')
+    group by 1, 2
+),
+
+active_users_summary as (
+    select date_trunc('day', block_time) as block_date,
+        blockchain,
+        count(distinct taker) as active_user_count
+    from uniswap.trades
+    where block_time >= date('2022-01-01')
+        and block_time < date('2023-01-01')
+    group by 1, 2
+)
+
+select a.block_date,
+    a.blockchain,
+    a.active_user_count,
+    n.new_user_count,
+    coalesce(a.active_user_count, 0) - coalesce(n.new_user_count, 0) as retain_user_count,
+    sum(new_user_count) over (partition by n.blockchain order by n.block_date) as accumulate_new_user_count
+from active_users_summary a
+inner join new_users_summary n on a.block_date = n.block_date and a.blockchain = n.blockchain
+order by 1, 2
+```
+
+Чтобы создать различные визуализации для этих запросов, отображающие ежедневное количество и пропорцию новых пользователей, ежедневное количество и пропорцию удерживаемых пользователей, ежедневное кумулятивное количество новых пользователей и пропорцию новых пользователей для каждой цепи в 2022 году, мы можем создать следующие графики:
+
+![](img/ch18_image_03.png)
+
+Ссылка на запрос:
+* [https://dune.com/queries/1928825](https://dune.com/queries/1928825)<a id="jump_8"></a>
+
+В запросах, упомянутых выше, включено сравнение ежедневных новых пользователей и ежедневных удерживаемых пользователей, а также их соответствующие пропорции. Однако, поскольку результаты уже сгруппированы по цепочке, невозможно отобразить как ежедневное количество новых пользователей, так и ежедневное количество удерживаемых пользователей на одном графике. В этом случае мы можем использовать Query of Query в Dune SQL для создания нового запроса с использованием предыдущих запросов в качестве источника данных. Выбрав определенную цепочку из результатов запроса, мы можем отобразить несколько показателей на одном графике, поскольку нам больше не нужно группировать по цепочке.
+
+``` sql
+select block_date,
+    active_user_count,
+    new_user_count,
+    retain_user_count
+from query_1928825 -- This points to all returned data from query https://dune.com/queries/1928825
+where blockchain = 'your_blockchain_name'
+```
+
+Ссылка на запрос:
+* [https://dune.com/queries/1929142](https://dune.com/queries/1929142)<a id="jump_8"></a>
