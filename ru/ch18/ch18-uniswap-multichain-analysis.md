@@ -153,3 +153,62 @@ where blockchain = 'your_blockchain_name'
 
 Ссылка на запрос:
 * [https://dune.com/queries/1929142](https://dune.com/queries/1929142)<a id="jump_8"></a>
+## Сравнительный анализ годовых новых пулов ликвидности
+
+Текущие Spells в Dune не предоставляют данные о пулах ликвидности, поэтому мы можем написать собственные запросы для агрегирования данных. Мы приветствуем всех, кто готов предоставить PR в репозиторий Spellbook на GitHub Dune, чтобы сгенерировать соответствующие Spells. Используя событие PoolCreated для парсинга данных, мы соберем данные с четырех блокчейнов вместе. Поскольку Uniswap V2 развернут только на цепи Ethereum, он не включен в объем нашего анализа.
+
+```sql
+with pool_created_detail as (
+    select 'ethereum' as blockchain,
+        evt_block_time,
+        evt_tx_hash,
+        pool,
+        token0,
+        token1
+    from uniswap_v3_ethereum.Factory_evt_PoolCreated
+
+    union all
+    
+    select 'arbitrum' as blockchain,
+        evt_block_time,
+        evt_tx_hash,
+        pool,
+        token0,
+        token1
+    from uniswap_v3_arbitrum.UniswapV3Factory_evt_PoolCreated
+
+    union all
+    
+    select 'optimism' as blockchain,
+        evt_block_time,
+        evt_tx_hash,
+        pool,
+        token0,
+        token1
+    from uniswap_v3_optimism.Factory_evt_PoolCreated
+
+    union all
+    
+    select 'polygon' as blockchain,
+        evt_block_time,
+        evt_tx_hash,
+        pool,
+        token0,
+        token1
+    from uniswap_v3_polygon.factory_polygon_evt_PoolCreated
+)
+
+select blockchain,
+    count(distinct pool) as pool_count
+from pool_created_detail
+where evt_block_time >= date('2022-01-01')
+    and evt_block_time < date('2023-01-01')
+group by 1
+```
+
+Мы можем создать круговую диаграмму для сравнения количества и доли недавно созданных пулов ликвидности на каждом блокчейне в 2022 году. Дополнительно мы можем создать таблицу для отображения подробных данных. После добавления этих диаграмм на панель управления отображение будет выглядеть следующим образом:
+
+![](img/ch18_image_05.png)
+
+Ссылка на запрос:
+* [https://dune.com/queries/1929177](https://dune.com/queries/1929177)<a id="jump_8"></a>
