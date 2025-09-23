@@ -212,3 +212,36 @@ group by 1
 
 Ссылка на запрос:
 * [https://dune.com/queries/1929177](https://dune.com/queries/1929177)<a id="jump_8"></a>
+## Ежедневное сравнение новых пулов ликвидности
+
+Аналогично, добавив дату к условию группировки в запросе, мы можем рассчитать ежедневное количество новых пулов ликвидности в каждой цепочке.
+
+``` sql
+with pool_created_detail as (
+    -- то же самое, что и предыдущий SQL
+),
+
+daily_pool_summary as (
+    select date_trunc('day', evt_block_time) as block_date,
+        blockchain,
+        count(distinct pool) as pool_count
+    from pool_created_detail
+    group by 1, 2
+)
+
+select block_date,
+    blockchain,
+    pool_count,
+    sum(pool_count) over (partition by blockchain order by block_date) as accumulate_pool_count
+from daily_pool_summary
+where block_date >= date('2022-01-01')
+    and block_date < date('2023-01-01')
+order by block_date
+```
+
+Мы можем сгенерировать столбчатую диаграмму для ежедневного количества новых пулов ликвидности и график площади для отображения ежедневного процентного количества. Кроме того, мы можем создать график площади, чтобы продемонстрировать кумулятивное количество недавно созданных пулов ликвидности. Визуализации можно добавить на панель мониторинга для отображения, как показано на следующем изображении:
+
+![](img/ch18_image_06.png)
+
+Ссылка на запрос:
+* [https://dune.com/queries/1929235](https://dune.com/queries/1929235)<a id="jump_8"></a>
