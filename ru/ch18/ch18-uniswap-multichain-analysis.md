@@ -245,3 +245,109 @@ order by block_date
 
 Ссылка на запрос:
 * [https://dune.com/queries/1929235](https://dune.com/queries/1929235)<a id="jump_8"></a>
+Okay, this is a great explanation of the Dune Analytics queries and how they're used to analyze TVL data. Let's break down the analysis and how to improve the presentation and dashboards further.
+
+**Summary of Existing Queries & Analysis**
+
+1. **Current TVL Breakdown (Pie Chart & Counter):**
+   - Calculates the current TVL for each blockchain by joining transfer data with token price data.
+   - Filters outliers to prevent skewed results (crucial for Optimism data).
+   - **Limitations:** Doesn't show *trends*.  It's a snapshot in time.
+
+2. **Daily TVL Change (Area Chart):**
+   - Calculates the *change* in TVL each day, not the daily total.
+   - Provides a time series showing TVL fluctuations.
+   - Filters a timeframe (2022-2023).  This makes sense for an initial analysis but might need to be more flexible.
+   - **Important:** The query currently calculates *change*, not a running total.  The "tvl" column in the query effectively shows the cumulative change.
+
+**Improvements and Enhancements**
+
+Here's a breakdown of suggested improvements, categorized by impact and complexity:
+
+**1. Low-Hanging Fruit (Easy to Implement):**
+
+* **Rename the "Daily TVL Change" Chart:** It's misleading.  It shows the *cumulative change*, not a simple daily change.  Consider "Daily Cumulative TVL Change" or "Daily TVL Growth."
+* **Dashboard Filters:** Add filters for:
+    * **Blockchain:**  Allow users to select specific chains to focus on.
+    * **Date Range:**  A date range picker will make the dashboards much more interactive.  This is *essential*.
+* **Units/Formatting:**  Explicitly state the units (e.g., USD) in the chart titles and axes labels.
+* **Tooltips:** Make sure tooltips on the charts display the precise values and dates.
+
+**2. Medium Complexity - Improving the Core Calculations**
+
+* **Calculate Daily Total TVL:** The biggest improvement is to calculate the *total* TVL at the end of each day, not just the change. This requires a slightly different approach. Here's how to modify the `tvl_daily` CTE in the second query to achieve this:
+
+   ```sql
+   with pool_created_detail as (
+       -- The SQL here is the same as above
+   ),
+
+   token_transfer_detail as (
+       -- The SQL here is the same as above
+   ),
+
+   token_list as (
+       -- The SQL here is the same as above
+   ),
+
+   latest_token_price as (
+       -- The SQL here is the same as above
+   ),
+
+   token_transfer_detail_amount as (
+       -- The SQL here is the same as above
+   ),
+
+   tvl_daily as (
+       SELECT
+           date_trunc('day', evt_block_time) as block_date,
+           blockchain,
+           SUM(amount_usd) AS tvl_change
+       FROM
+           token_transfer_detail_amount
+       WHERE
+           abs(amount_usd) < 1e9
+       GROUP BY
+           1, 2
+   ),
+
+   daily_tvl_total as (
+       SELECT
+           block_date,
+           blockchain,
+           SUM(tvl_change) OVER (PARTITION BY blockchain ORDER BY block_date) as daily_tvl
+       FROM
+           tvl_daily
+   )
+
+   SELECT *
+   FROM daily_tvl_total
+   ORDER BY 1,2;
+   ```
+
+   * **Explanation:**  We've created a new CTE called `daily_tvl_total`. It uses a window function (`SUM(tvl_change) OVER (PARTITION BY blockchain ORDER BY block_date)`) to calculate the *cumulative* sum of `tvl_change` for each blockchain, ordered by date. This gives you the TVL at the end of each day.
+
+* **Consider Rolling Averages:** Adding a rolling average (e.g., 7-day rolling average) can smooth out daily fluctuations and highlight trends more clearly.  This can be implemented as another window function.
+
+**3. Advanced - Deeper Analysis and Context**
+
+* **Historical TVL:** Display the historical TVL alongside the current TVL.  This allows users to compare current TVL to past performance.
+* **Market Context:**  Show how TVL relates to broader market conditions (e.g., cryptocurrency prices, DeFi volume).  Requires bringing in additional data sources.
+* **Contribution Breakdown:** Show how different protocols contribute to the TVL on each chain.
+* **Comparison Across Chains:** Add a comparison view that allows users to directly compare TVL trends across different blockchains.
+
+**Dashboard Layout Suggestions**
+
+* **Main TVL Overview:**  Pie chart showing current TVL breakdown by chain, alongside a counter showing total TVL. Filters for blockchain and date range.
+* **TVL Trend Chart:**  Area chart showing the cumulative TVL over time, with the rolling average overlayed.
+* **Protocol Contribution (Table or Bar Chart):** Display the top protocols contributing to TVL on each chain.
+
+**Key Considerations**
+
+* **Data Accuracy:**  The accuracy of your analysis depends on the accuracy of the underlying data.  Be aware of potential data discrepancies.
+* **Data Latency:**  Consider the latency of the data.  Real-time dashboards are ideal, but delayed data is often necessary.
+* **User Experience:**  Design dashboards that are easy to understand and interact with.  Avoid information overload.
+
+
+
+By implementing these improvements, you can create more informative and engaging dashboards for analyzing TVL data.  The most important change is to calculate the *total* daily TVL, not just the change.  Let me know if you're interested in more detailed code examples for any of these suggestions!
