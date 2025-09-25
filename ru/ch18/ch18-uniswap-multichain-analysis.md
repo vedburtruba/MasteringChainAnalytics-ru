@@ -351,3 +351,55 @@ Here's a breakdown of suggested improvements, categorized by impact and complexi
 
 
 By implementing these improvements, you can create more informative and engaging dashboards for analyzing TVL data.  The most important change is to calculate the *total* daily TVL, not just the change.  Let me know if you're interested in more detailed code examples for any of these suggestions!
+## Топ пулов по TVL
+
+Агрегируя TVL (Total Value Locked) по адресу контракта каждого пула Flow, мы можем рассчитать текущий TVL для каждого пула. Однако, если мы хотим более интуитивно сравнить торговые пары, используя символы токенов, мы можем объединить токены.erc20 Spells для генерации торговых пар. В Uniswap, одна и та же торговая пара может иметь несколько ставок сервисного сбора (разные адреса пула), поэтому нам нужно агрегировать их по названию торговой пары. Вот SQL для достижения этого:
+
+``` sql
+with pool_created_detail as (
+    -- SQL здесь такой же, как выше
+),
+
+token_transfer_detail as (
+    -- SQL здесь такой же, как выше
+),
+
+token_list as (
+    -- SQL здесь такой же, как выше
+),
+
+latest_token_price as (
+    -- SQL здесь такой же, как выше
+),
+
+token_transfer_detail_amount as (
+    -- SQL здесь такой же, как выше
+),
+
+top_tvl_pools as (
+    select pool,
+        sum(amount_usd) as tvl
+    from token_transfer_detail_amount
+    where abs(amount_usd) < 1e9 -- Исключить некоторые выбросы из Optimism chain
+    group by 1
+    order by 2 desc
+    limit 200
+)
+
+select concat(tk0.symbol, '-', tk1.symbol) as pool_name,
+    sum(t.tvl) as tvl
+from top_tvl_pools t
+inner join pool_created_detail p on t.pool = p.pool
+inner join tokens.erc20 as tk0 on p.token0 = tk0.contract_address
+inner join tokens.erc20 as tk1 on p.token1 = tk1.contract_address
+group by 1
+order by 2 desc
+limit 100
+```
+
+Мы можем сгенерировать столбчатую диаграмму и таблицу для отображения данных для пулов Flow с самым высоким TVL (Total Value Locked).
+
+![](img/ch18_image_09.png)
+
+Ссылка на запрос:
+* [https://dune.com/queries/1933442](https://dune.com/queries/1933442)<a id="jump_8"></a>
