@@ -403,3 +403,12 @@ limit 100
 
 Ссылка на запрос:
 * [https://dune.com/queries/1933442](https://dune.com/queries/1933442)<a id="jump_8"></a>
+## О нас
+
+`Sixdegree` – это профессиональная команда по анализу данных в блокчейне. Наша миссия – предоставлять пользователям точные графики, анализ и инсайты на основе данных в блокчейне. Мы стремимся популяризировать анализ данных в блокчейне. Благодаря созданию сообщества, написанию учебных пособий и другим инициативам мы обучаем аналитиков данных в блокчейне, выпускаем ценный аналитический контент, продвигаем сообщество для построения слоя данных блокчейна и воспитываем таланты для широкого будущего приложений данных блокчейна. Добро пожаловать на площадку обмена опытом!
+
+- Веб-сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Email: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
