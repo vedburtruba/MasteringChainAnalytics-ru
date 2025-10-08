@@ -58,3 +58,47 @@ SQL довольно сложен, поэтому я не буду вдават�
 ## Измените путь к своему локальному файлу
 df_target_label = pd.read_csv(u'ВАШ ПУТЬ К ФАЙЛУ/graph_raw_label.csv')
 df_target_relation = pd.read_csv(u'ВАШ ПУТЬ К ФАЙЛУ/graph_relation.csv')
+
+## Получить список всех адресов для запроса API
+address_list = list(df_target_label.address.values)
+balance_list = []
+print(address_list)
+
+- Получить данные о балансе для всех адресов через API Etherscan и записать в DataFrame
+
+``` python
+while len(address_list) > 0:
+    for address in address_list:
+
+        api_key = "your_api_key"
+        try:
+            response = requests.get(
+                "https://api.etherscan.io/api?module=account&action=balance&address=" + address + "&tag=latest&apikey=" + api_key
+            )
+
+
+            # Распарсить JSON-ответ
+            response_json = json.loads(response.text)
+
+            # Получить информацию о балансе из ответа
+            eth_balance = response_json["result"]
+            eth_balance = int(eth_balance)/(1E18)
+            balance_list.append((address,eth_balance))
+            address_list.remove(address)
+            time.sleep(1)
+            print(eth_balance)
+        except:
+            print('Ошибка')
+            print('Длина списка:'+str(len(address_list)))
+
+
+df_balance = pd.DataFrame(balance_list, columns=['address', 'Balance'])
+df_target_label = df_target_label.merge(df_balance,left_on=['address'],right_on=['address'],how='left')
+print('конец')
+```
+
+- Добавить баланс в DataFrame, создать столбец Balance_level (метка на основе размера Balance) для управления размером узла в сетевом графе позже
+
+``` python
+    
+```
