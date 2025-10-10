@@ -168,3 +168,13 @@ node_trace.text = node_text
 **Final Thoughts**
 
 You're on a strong path!  Your ability to combine data analysis, graph theory, and visualization tools to extract meaningful insights is commendable. The suggestions above are merely refinements – you're already producing valuable work.  Keep exploring, experimenting, and refining your approach, and you'll continue to uncover new and interesting perspectives on complex data.
+
+## О нас
+
+`Sixdegree` — профессиональная команда по анализу данных на блокчейне. Наша миссия — предоставлять пользователям точные графики, аналитику и инсайты на основе данных на блокчейне. Мы стремимся популяризировать анализ данных на блокчейне. Благодаря созданию сообщества и написанию учебных пособий, среди прочих инициатив, мы обучаем аналитиков данных на блокчейне, создаем ценный аналитический контент, продвигаем сообщество для создания слоя данных блокчейна и воспитываем таланты для широкого будущего блокчейн-данных. Добро пожаловать на платформу обмена опытом сообщества!
+
+- Сайт: [sixdegree.xyz](https://sixdegree.xyz)
+- Email: [contact@sixdegree.xyz](mailto:contact@sixdegree.xyz)
+- Twitter: [twitter.com/SixdegreeLab](https://twitter.com/SixdegreeLab)
+- Dune: [dune.com/sixdegree](https://dune.com/sixdegree)
+- Github: [https://github.com/SixdegreeLab](https://github.com/SixdegreeLab)
