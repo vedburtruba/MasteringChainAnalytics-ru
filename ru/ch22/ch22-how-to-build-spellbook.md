@@ -179,3 +179,48 @@ git checkout -b add_bnb_spaceid
 ![](img/ch22_image_02.jpg)
 
 Ссылка на документ: [Настройте структуру ваших файлов для SQL, схемы и исходных файлов](https://dune.com/docs/zh/spellbook/how-to-cast-a-spell/3-set-up-your-file-structure-for-SQL-schema-and-source-files/)
+
+## Определение файла источника зависимостей
+
+Здесь нам нужно использовать только семь различных версий контракта `RegistrarController`, которые были развернуты проектом SpaceID на данный момент. Эти таблицы находятся в схеме `spaceid_bnb`. Определение нашего файла источника зависимостей `spaceid_bnb_sources.yml` выглядит следующим образом:
+
+```
+version: 2
+
+sources:
+  - name: spaceid_bnb
+    description: "bnb декодированные таблицы, связанные с контрактом SpaceId"
+    freshness: # период актуальности по умолчанию
+      warn_after: { count: 12, period: hour }
+      error_after: { count: 24, period: hour }
+    tables:
+      - name: BNBRegistrarControllerV3_evt_NameRegistered
+        loaded_at_field: evt_block_time
+      - name: BNBRegistrarControllerV4_evt_NameRegistered
+        loaded_at_field: evt_block_time
+      - name: BNBRegistrarControllerV5_evt_NameRegistered
+        loaded_at_field: evt_block_time
+      - name: BNBRegistrarControllerV6_evt_NameRegistered
+        loaded_at_field: evt_block_time
+      - name: BNBRegistrarControllerV7_evt_NameRegistered
+        loaded_at_field: evt_block_time
+      - name: BNBRegistrarControllerV8_evt_NameRegistered
+        loaded_at_field: evt_block_time
+      - name: BNBRegistrarControllerV9_evt_NameRegistered
+        loaded_at_field: evt_block_time
+```
+
+В определенном файле источника зависимостей:
+
+1. `version` всегда устанавливается в `2`.
+2. `name` указывает схему (Имя схемы) таблиц данных источника зависимостей. Мы можем создать новый запрос в Dune, найти соответствующую таблицу и добавить имя таблицы в редактор запросов. Часть слева от символа `.` является именем схемы таблицы. Например, имя схемы таблицы `spaceid_bnb.BNBRegistrarControllerV3_evt_NameRegistered` - `spaceid_bnb`.
+3. `freshness` используется для проверки и обеспечения автоматического обновления данных в магической таблице. Если данные не обновлены успешно в течение указанного времени, при использовании магической таблицы будет выдано предупреждение или ошибка (я лично пока не сталкивался с такой ошибкой, поэтому она может отправляться только персоналу, обслуживающему модуль магической таблицы). Использование настроек по умолчанию приемлемо. Эта настройка применяется ко всем таблицам источников данных, перечисленным под `tables`. Конечно, вы также можете добавить эту настройку к отдельным таблицам.
+4. `tables` перечисляет таблицы источников данных, которые нам нужно использовать. Все эти таблицы должны принадлежать схеме, указанной выше. Если есть таблицы, принадлежащие к другим схемам, нам потребуется добавить отдельное определение с той же структурой в том же файле. Вы можете обратиться к определениям существующих файлов схем магической таблицы.
+
+- `name` устанавливает имя таблицы. Не включайте здесь имя схемы.
+- `loaded_at_field` указывает поле типа timestamp, используемое для проверки времени загрузки последних нескольких строк данных. Это необходимо для обеспечения регулярного обновления данных в магической таблице, в сочетании с настройкой `freshness`.
+
+Справочные документы:
+
+- [Определите и определите источники](https://dune.com/docs/zh/spellbook/how-to-cast-a-spell/4-identify-and-define-sources/)
+- [Источники данных](https://dune.com/docs/zh/spellbook/data-sources/)
