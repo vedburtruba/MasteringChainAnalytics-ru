@@ -224,3 +224,64 @@ sources:
 
 - [Определите и определите источники](https://dune.com/docs/zh/spellbook/how-to-cast-a-spell/4-identify-and-define-sources/)
 - [Источники данных](https://dune.com/docs/zh/spellbook/data-sources/)
+
+## Определение файла схемы
+
+Файл схемы `spaceid_bnb_schema.yml` предоставляет информацию, такую как имя, поля и описание магической таблицы, которая будет создана, а также соответствующую информацию о конфигурации.
+
+```yml
+version: 2
+
+models:
+  - name: spaceid_bnb_registrations
+    meta:
+      blockchain: bnb
+      project: spaceid
+      contributors: [springzh]
+    config:
+      tags: ['bnb','spaceid','name','registrations']
+    description: >
+       SpaceID V3, V4, V5, V6, V7, V8 & V9 Name Registered on BNB
+    columns:
+      - &version
+        name: version
+        description: "Версия контракта"
+      - &block_time
+        name: block_time
+        description: "UTC время блока события"
+      - &name
+        name: name
+        description: "Имя Space ID"
+        tests:
+          - unique
+      - &label
+        name: label
+        description: "Метка Space ID"
+      - &owner
+        name: owner
+        description:  "Владелец Space ID"
+      - &cost
+        name: cost
+        description:  "Стоимость, потраченная на регистрацию Space ID"
+      - &expires
+        name: expires
+        description:  "Дата и время истечения срока действия имени в формате Unix timestamp"
+      - &contract_address
+        name: contract_address
+        description:  "Адрес контракта, который вызывался для регистрации Space ID"
+      - &tx_hash
+        name: tx_hash
+        description:  "Хэш транзакции"
+      - &block_number
+        name: block_number
+        description: "Номер блока, в котором была выполнена транзакция"
+      - &evt_index
+        name: evt_index
+        description: "Индекс события"
+```
+
+Поскольку структура таблиц событий `NameRegistered` для разных версий SpaceID одинакова, наша работа относительно проста. Мы можем использовать структуру одной из таблиц в качестве справочного материала для определения нашего файла схемы. Чтобы отличить источник регистрации доменов, мы добавляем поле `version` для хранения информации о версии смарт-контракта, например, 'v3', 'v4' и т. д.
+
+Поскольку доменные имена уникальны, мы добавляем определение теста на уникальность к полю `name`. Во время компиляции будет сгенерирован связанный тест SQL для обеспечения отсутствия повторяющихся значений в данных магической таблицы.
+
+Синтаксис `&field_name` определяет имена полей. Первое вхождение имени поля в файле должно иметь префикс "&". Позже в том же файле определения полей других таблиц могут использовать `*field_name` для ссылки на определенное поле, что делает код более лаконичным.
