@@ -285,3 +285,86 @@ models:
 Поскольку доменные имена уникальны, мы добавляем определение теста на уникальность к полю `name`. Во время компиляции будет сгенерирован связанный тест SQL для обеспечения отсутствия повторяющихся значений в данных магической таблицы.
 
 Синтаксис `&field_name` определяет имена полей. Первое вхождение имени поля в файле должно иметь префикс "&". Позже в том же файле определения полей других таблиц могут использовать `*field_name` для ссылки на определенное поле, что делает код более лаконичным.
+## Написание SQL-запроса для магической табличной вьюхи
+
+Теперь мы переходим к самой критичной части создания магической таблицы — написанию SQL. Откройте файл `spaceid_bnb_registrations.sql` и вставьте следующее содержимое (с некоторыми опущенными частями):
+
+``` sql
+{{
+    config(
+        alias='registrations'
+        ,materialized = 'incremental'
+        ,file_format = 'delta'
+        ,incremental_strategy = 'merge'
+        ,unique_key = ['name']
+        ,post_hook='{{ expose_spells(\'["bnb"]\',
+                                    "project",
+                                    "spaceid",
+                                    \'["springzh"]\') }}'
+    )
+}}
+
+SELECT 'v3'                    as version,
+       evt_block_time          as block_time,
+       name,
+       label,
+       owner,
+       cast(cost as double)    as cost,
+       cast(expires as bigint) as expires,
+       contract_address,
+       evt_tx_hash             as tx_hash,
+       evt_block_number        as block_number,
+       evt_index
+FROM {{source('spaceid_bnb', 'BNBRegistrarControllerV3_evt_NameRegistered')}}
+{% if is_incremental() %}
+WHERE evt_block_time >= date_trunc("day", now() - interval '1 week')
+{% endif %}
+
+UNION ALL
+
+-- Omitted V4 - V8 parts
+
+UNION ALL
+
+-- There are some records in v9 table that are duplicated with those in the v5 table. So we join to exclude them
+SELECT 'v9'                       as version,
+       v9.evt_block_time          as block_time,
+       v9.name,
+       v9.label,
+       v9.owner,
+       cast(v9.cost as double)    as cost,
+       cast(v9.expires as bigint) as expires,
+       v9.contract_address,
+       v9.evt_tx_hash             as tx_hash,
+       v9.evt_block_number        as block_number,
+       v9.evt_index
+FROM {{source('spaceid_bnb', 'BNBRegistrarControllerV9_evt_NameRegistered')}} v9
+LEFT JOIN {{source('spaceid_bnb', 'BNBRegistrarControllerV3_evt_NameRegistered')}} v5 ON v9.name = v5.name
+WHERE v9.evt_block_time > v5.evt_block_time
+
+```
+
+Пояснения:
+
+*   `alias='registrations'` - определяет имя магической таблицы вьюхи.
+*   `materialized = 'incremental'` - указывает, что таблица должна обновляться инкрементально.
+*   `file_format = 'delta'` - указывает формат файла для инкрементальных обновлений.
+*   `incremental_strategy = 'merge'` - определяет стратегию слияния для инкрементальных обновлений.
+*   `unique_key = ['name']` - определяет уникальный ключ для инкрементальных обновлений.
+*   `post_hook='{{ expose_spells(\'["bnb"]\', "project", "spaceid", \'["springzh"]\') }}'` - задает хук для публикации магической таблицы.
+*   `{% if is_incremental() %}` - определяет, какие части запроса будут выполняться при инкрементальном обновлении.
+*   `WHERE evt_block_time >= date_trunc("day", now() - interval '1 week')` - фильтрует данные для инкрементального обновления, выбирая только данные за последнюю неделю.
+
+С добавленными конфигурациями для инкрементального обновления и условиями, когда в режиме инкрементального обновления (т.е. `{% if is_incremental() %}`), будут запрашиваться только данные за последнюю неделю. Запрошенные новые данные будут объединены с физическим файлом, содержащим данные вьюхи. `incremental_strategy = 'merge'` обеспечит игнорирование существующих записей в процессе этого слияния.
+
+Дополнительные пояснения:
+
+*   `dbt compile` - используется для компиляции SQL-запроса.
+*   PR - pull request
+*   `v9.name = v5.name` - условие соединения для исключения дублирующихся записей.
+*   `WHERE v9.evt_block_time > v5.evt_block_time` - фильтр, выбирающий записи, которые не встречались ранее.
+
+Документация:
+
+*   [Написание SQL-запроса для магической таблицы](https://dune.com/docs/zh/spellbook/how-to-cast-a-spell/6-write-your-spell-as-SELECT-statement/)
+*   [Настройка стратегии материализации](https://dune.com/docs/zh/spellbook/how-to-cast-a-spell/6-write-your-spell-as-SELECT-statement/)
