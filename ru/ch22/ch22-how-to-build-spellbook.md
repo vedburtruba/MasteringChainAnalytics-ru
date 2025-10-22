@@ -368,3 +368,23 @@ WHERE v9.evt_block_time > v5.evt_block_time
 
 *   [Написание SQL-запроса для магической таблицы](https://dune.com/docs/zh/spellbook/how-to-cast-a-spell/6-write-your-spell-as-SELECT-statement/)
 *   [Настройка стратегии материализации](https://dune.com/docs/zh/spellbook/how-to-cast-a-spell/6-write-your-spell-as-SELECT-statement/)
+
+## Добавление новой модели в файл dbt_project.yml
+
+Далее необходимо изменить файл `dbt_project.yml`, расположенный в корне репозитория `spellbook`, чтобы включить нашу магическую таблицу.
+
+```
+    spaceid:
+      +schema: spaceid
+      bnb:
+        +schema: spaceid_bnb
+```
+
+Здесь мы указываем имя проекта и имя его схемы, а также имя блокчейна и имя схемы под этим блокчейном. С этой иерархической структурой мы можем обрабатывать создание магических таблиц для каждого проекта, развернутого на разных блокчейнах, и далее объединять магические таблицы для одного и того же проекта на нескольких блокчейнах в магическую таблицу на уровне проекта. Для конкретных примеров можно обратиться к магическим таблицам, связанным с проектами, такими как opensea или uniswap.
+
+Вы можете снова использовать `dbt compile`, чтобы убедиться, что компиляция прошла успешно.
+
+Ссылка на документы:
+
+- [Настройка псевдонима и стратегии материализации](https://dune.com/docs/zh/spellbook/how-to-cast-a-spell/7-configure-alias-and-materialization-strategy/)
+- [Определение моделей в dbt](https://dune.com/docs/zh/spellbook/defining-models-in-dbt/)
