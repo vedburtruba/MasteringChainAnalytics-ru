@@ -388,3 +388,27 @@ WHERE v9.evt_block_time > v5.evt_block_time
 
 - [Настройка псевдонима и стратегии материализации](https://dune.com/docs/zh/spellbook/how-to-cast-a-spell/7-configure-alias-and-materialization-strategy/)
 - [Определение моделей в dbt](https://dune.com/docs/zh/spellbook/defining-models-in-dbt/)
+## Написание тестов
+
+Для обеспечения полноты и точности сгенерированных данных магической таблицы, нам необходимо написать соответствующие тесты. Создайте новый путь директории `spaceid/bnb` под директорией `spellbook/test` и перейдите в поддиректорию `bnb`. В этой директории создайте файл с именем `spaceid_registrations_test.sql` со следующим содержимым:
+
+``` sql
+WITH unit_tests AS (
+    SELECT COUNT(*) as count_spell
+    FROM {{ ref('spaceid_bnb_registrations') }} AS s
+    WHERE version = 'v7'
+),
+
+spaceid_v7_registration as (
+    SELECT COUNT(*) as count_event_table
+    FROM {{source('spaceid_bnb', 'BNBRegistrarControllerV7_evt_NameRegistered')}}
+)
+SELECT 1
+FROM unit_tests
+JOIN spaceid_v7_registration ON TRUE
+WHERE count_spell - count_event_table <> 0
+```
+
+В этом тесте мы используем `{{ ref('spaceid_bnb_registrations') }}` для ссылки на сгенерированную магическую таблицу. Сначала мы считаем количество записей для версии V7 из магической таблицы. Затем мы используем `{{source('spaceid_bnb', 'BNBRegistrarControllerV7_evt_NameRegistered')}}` для запроса количества записей из соответствующей таблицы событий V7. Наконец, мы проверяем, одинаковы ли значения, возвращенные этими двумя CTE. Если они отличаются, тест вернет строчку результата. Успешный тест не должен возвращать никаких результатов, а возврат каких-либо записей указывает на сбой теста.
+
+Ссылка на документ: [Написание модульных тестов для вашего заклинания](https://dune.com/docs/zh/spellbook/getting-started/tests/)
