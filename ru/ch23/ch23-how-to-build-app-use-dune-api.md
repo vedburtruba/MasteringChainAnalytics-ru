@@ -57,3 +57,87 @@ yarn dev
 ```
 
 Для других команд обратитесь к файлу `readme.md` в исходном коде проекта.
+## Обзор разработки
+
+### Создание проекта
+
+Проект основан на Next.js, используя tailwindcss в качестве CSS-фреймворка, Axios в качестве загрузчика, dexie для операций с данными на стороне клиента и prisma для операций с данными на стороне сервера.
+
+```
+$ yarn create next-app
+$ yarn add tailwindcss autoprefixer postcss prisma -D
+$ yarn add axios dexie dexie-react-hooks @prisma/client
+```
+
+### Инициализация схемы
+
+``` bash
+$ yarn prisma init --datasource-provider sqlite
+$ vim prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model DuneQuery {
+  id           String   @unique
+  execution_id String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+$ yarn prisma migrate dev --name init
+$ yarn prisma generate
+```
+
+### Инкапсуляция API вызовов
+
+Добавьте `lib/dune.ts` для инкапсуляции трех шагов выполнения API Dune:
+
+``` javascript
+export const executeQuery = async (id: string, parameters: any) => {
+  // Generate a hash for the current execution query key, check and get the corresponding execution_id from sqlite. Remember to handle cache expiration.
+  // ...
+};
+
+export const executeStatus = async (id: string) => {
+  // ...
+};
+
+export const executeResults = async (id: string) => {
+  // ...
+};
+```
+
+### Отображение данных на стороне клиента
+
+В каталоге `pages` добавьте рекурсивную функцию для проверки существования узла `data.result` для использования в рекурсивных вызовах. Активируйте ее в `useEffect`.
+
+### Развертывание кода
+
+Процесс развертывания аналогичен проекту Next.js. Инициализация базы данных уже размещена в `package.json`:
+
+``` json
+"scripts": {
+  "dev": "prisma generate && prisma migrate dev && next dev",
+  "build": "prisma generate && prisma migrate deploy && next build",
+  "start": "next start"
+}
+```
+
+### Написание SQL запросов для API
+
+API вызовы и соответствующая информация о запросах:
+
+- New Pools: https://dune.com/queries/2056212
+- Latest Swap: https://dune.com/queries/2056310
+- Alerts: https://dune.com/queries/2056547
+
+### Важные функциональные моменты
+
+1. Dune API требует выполнения `Execute Query ID` для получения `execution_id` перед выполнением `status/results`. Правильно обрабатывайте истечение срока действия кэша.
+2. Клиентскому коду необходимо выполнять рекурсивные вызовы к системному API для получения результатов.
