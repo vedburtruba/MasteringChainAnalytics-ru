@@ -69,3 +69,7 @@ Okay, this is a well-explained breakdown of a typical UserOperation flow, especi
 *   **Advanced Smart Wallet Features:** Briefly mention some of the advanced features that smart wallets can enable, such as gasless transactions, automated strategies, and multi-signature support.
 
 **In conclusion, your explanation is solid. Adding these clarifications and enhancements will further improve it, making it even more comprehensive and informative about the UserOperation flow in a Account Abstraction environment.**
+## Ссылки
+- [ERC-4337: Абстракция аккаунта с использованием Alt Mempool](https://eips.ethereum.org/EIPS/eip-4337)
+- [Вы могли бы изобрести абстракцию аккаунта: Часть 1](https://www.alchemy.com/blog/account-abstraction)
+- [erc4337.io](https://www.erc4337.io/)
