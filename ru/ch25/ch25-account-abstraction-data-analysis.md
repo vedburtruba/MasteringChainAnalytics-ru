@@ -7,3 +7,22 @@
 - `handleOps(function)`: выполнение пакета UserOperations
 - `UserOperationEvent(event)`: событие, испускаемое после каждого успешного запроса
 - `AccountDeployed(event)`: развертывание аккаунта "отправителя".
+## Анализ пользователей
+
+Начнем с самого простого анализа: сколько User Operations были инициированы пользователями. Каждая Operation, инициированная пользователем, будет генерировать запись UserOperationEvent, поэтому вычисление должно использовать таблицу UserOperationEvent. Обратите внимание, что это не таблица `handleOps`, потому что, как упоминалось ранее, `handleOps` будет передавать массив ops, что означает, что одна запись в таблице `handleOps` будет соответствовать нескольким записям в таблице UserOperationEvent.
+
+```sql
+--получить общее количество User Operations
+select count(*) from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+
+--ежедневное количество User Operations
+select date_trunc('day', evt_block_time) as dt, count(*) as nums
+from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent 
+group by 1
+```
+![](img/daily-operation.png)
+
+
+Для ежедневного анализа новых пользователей — то есть для расчета количества новых адресов кошельков, создаваемых каждый день — есть два способа. Один — посчитать экземпляры, в которых поле `initCode` в `handleOps` не пустое, а второй — посчитать ежедневное количество новых пользователей через событие AccountDeployed.
+
+![](img/daily-new-user.png)
