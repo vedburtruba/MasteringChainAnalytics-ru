@@ -26,3 +26,627 @@ group by 1
 Для ежедневного анализа новых пользователей — то есть для расчета количества новых адресов кошельков, создаваемых каждый день — есть два способа. Один — посчитать экземпляры, в которых поле `initCode` в `handleOps` не пустое, а второй — посчитать ежедневное количество новых пользователей через событие AccountDeployed.
 
 ![](img/daily-new-user.png)
+## Анализ бандлеров
+
+Для **бандлеров** обычно необходимо анализировать количество бандлеров и долю рынка каждого бандлера, поскольку таблица `UserOperationEvent` не записывает адрес бандлера, поэтому нам необходимо получить адрес EOA, инициировавший эту транзакцию, через поле хеша таблицы `polygon.transactions`. Конечно, есть и другой способ, который заключается в получении поля получателя как адрес бандлера путем ассоциации с таблицей `handleOps`. Здесь мы используем первый способ.
+
+``` sql
+-- общее количество бандлеров
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(distinct bundler) from ops left join tx on ops.evt_tx_hash = tx.hash
+
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(distinct bundler) from ops left join tx on ops.evt_tx_hash = tx.hash
+
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundлер, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+-- получить количество операций, упакованных каждым бандлером
+with ops as (
+       select 'polygon' as chain, 'MATIC' as symbol,'v0.6' as version,evt_block_time, evt_tx_hash, actualGasCost 
+       from erc437_polygon.EntryPoint_v0_6_evt_UserOperationEvent
+)
+, tx as (
+     select 'polygon' as chain, "from" as bundler, hash, block_time, cast(gas_price as double) * gas_used as tx_fee 
+     from polygon.transactions 
+     where block_time > timestamp '2023-02-15'
+)
+select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
