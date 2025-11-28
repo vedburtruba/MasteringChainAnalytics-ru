@@ -650,3 +650,34 @@ with ops as (
      where block_time > timestamp '2023-02-15'
 )
 select count(bundler) from ops left join tx on ops.evt_tx_hash = tx.hash group by bundler order by count(bundler) DESC;
+
+## Анализ плательщика
+
+Анализ плательщика относительно проще, чем анализ сборщика. Информация о плательщике каждой операции записывается в поле `paymaster` в таблице `UserOperationEvent`. Если значение поля `paymaster` равно `0000...0000`, это означает, что операция (userOp) не использует плательщика. Если оно не пустое, оно хранит адрес контракта плательщика. Плательщик обычно анализирует информацию, такую как количество плательщиков и количество операций, за которые каждый плательщик заплатил.
+
+``` sql
+-- ===== общее количество плательщиков =====
+select count(distinct paymaster) from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent;
+
+-- ===== Общее количество и доллары США операций, оплаченных каждым плательщиком ======
+with priceUSD as (
+    select * from prices.usd where minute > timestamp '2023-02-15'
+        and symbol in ('WMATIC')
+        and contract_address in (
+            0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270 --polygon wmatic
+            )
+)
+, op_price as (
+    select 
+        op.paymaster, 
+        cast(op.actualGasCost as double)/1e18 as actualGasCost, 
+        pu.price, 
+        cast(op.actualGasCost as double)/1e18*pu.price as actualGasCostUSD 
+    from erc4337_polygon.EntryPoint_v0_6_evt_UserOperationEvent op
+    left join priceUSD pu on date_trunc('minute', op.evt_block_time) = pu.minute
+)
+select paymaster, count(*) as paid_ops,sum(actualGasCost) as paid_matic, sum(actualGasCostUSD) as paid_USD 
+from op_price group by paymaster
+```
+
+![](img/paymaster.png)
